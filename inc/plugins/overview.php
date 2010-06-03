@@ -670,11 +670,11 @@ function overview_end()
         }
 
         $intervall = $mybb->settings['overview_ajax_time'] * 1000;
-        $overview_headerinclude = "<script type=\"text/javascript\" src=\"jscripts/overview.js\"></script>\n<script language=\"JavaScript\" type=\"text/javascript\">\nvar req = createXMLHttpRequest();\n</script>";
-        $overview_body_onload = " onload=\"dooverview(".$loaddisplay.");\"";
-        $overview_body_onload2 = "; dooverview(".$loaddisplay.")";
+        $overview_headerinclude = "<script type=\"text/javascript\" src=\"jscripts/overview.js\"></script>\n";
+        $overview_body_onload = " onload=\"overview_request(".$loaddisplay.");\"";
+        $overview_body_onload2 = "; overview_request(".$loaddisplay.")";
         $overview = "<span id=\"overview_load\"></span>\n<div id=\"overview\"></div>";
-        $overview_body = "<script type=\"text/javascript\">\nsetInterval('dooverview(".$loaddisplay.")', ".$intervall.");\n</script>";
+        $overview_body = "<script type=\"text/javascript\">\nsetInterval('overview_request(".$loaddisplay.")', ".$intervall.");\n</script>";
     }
 }
 
