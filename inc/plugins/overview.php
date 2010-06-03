@@ -44,7 +44,7 @@ function overview_info()
         "authorsite"    => "http://www.mybboard.de",
         "version"       => "3.9.0",
         "guid"          => "79710704156952a4cf8793808c6ab3ea",
-        "compatibility" => "14*"
+        "compatibility" => "14*,15*,16*"
         );
 }
 
