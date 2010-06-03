@@ -38,9 +38,9 @@ function overview_info()
         "name"          => "Overview",
         "title"         => "Overview",
         "description"   => "Displays a box on the index page that shows different infomations about your board.<br />"
-                           ."<i>Maintained by:</i> <a href=\"mailto:Andreas.Klauer@metamorpher.de\">Andreas Klauer</a>",
+                           ."<i>Maintained by <a href=\"mailto:Andreas.Klauer@metamorpher.de\">Andreas Klauer</a></i>",
         "website"       => "http://www.mybboard.de",
-        "author"        => "MyBBoard.de",
+        "author"        => "Michael Schlechtinger",
         "authorsite"    => "http://www.mybboard.de",
         "version"       => "3.9.0",
         "guid"          => "79710704156952a4cf8793808c6ab3ea",
