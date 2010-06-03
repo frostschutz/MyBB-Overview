@@ -1,43 +1,58 @@
 <?php
-###################################
-# Plugin Overview 3.2             #
-# (c) 2005-2009 by MyBBoard.de    #
-# Website: http://www.mybboard.de #
-# License: GPLv3 / license.txt    #
-###################################
+/**
+ * This file is part of Overview plugin for MyBB.
+ * Copyright (C) 2005-2009 Michael Schlechtinger <kontakt@mybboard.de>
+ * Copyright (C) 2010 Andreas Klauer <Andreas.Klauer@metamorpher.de>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 if(!defined("IN_MYBB"))
 {
     die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-### Benötigte Daten für das Plugin-System ###
+/* --- Hooks: --- */
+
 $plugins->add_hook("index_start", "overview");
 $plugins->add_hook("xmlhttp", "overview_ajax");
 $plugins->add_hook("index_end", "overview_end");
 
-### Informationen zum Plugin ###
+/* --- Plugin-API: --- */
+
 function overview_info()
 {
     return array(
         "name"          => "Overview",
         "title"         => "Overview",
-        "description"   => "Displays a box on the index page that shows different infomations about your board.",
+        "description"   => "Displays a box on the index page that shows different infomations about your board.<br />"
+                           ."<i>Maintained by:</i> <a href=\"mailto:Andreas.Klauer@metamorpher.de\">Andreas Klauer</a>",
         "website"       => "http://www.mybboard.de",
         "author"        => "MyBBoard.de",
         "authorsite"    => "http://www.mybboard.de",
-        "version"       => "3.2.2",
+        "version"       => "3.9.0",
         "guid"          => "79710704156952a4cf8793808c6ab3ea",
         "compatibility" => "14*"
-    );
+        );
 }
 
-### Installation ###
 function overview_install()
 {
     global $db;
 
-    // Templates für dieses Plugin einfügen
+    // Insert templates
     $templatearray = array(
         "title" => "index_overview",
         "template" => "<table width=\"100%\" border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"0\" class=\"tborder\">
@@ -54,7 +69,7 @@ function overview_install()
         </table>
         <br />",
         "sid" => -1
-    );
+        );
     $db->insert_query("templates", $templatearray);
 
     $templatearray = array(
@@ -70,7 +85,7 @@ function overview_install()
         {\$table_content}
         </table></td>",
         "sid" => -1
-    );
+        );
     $db->insert_query("templates", $templatearray);
 
     $templatearray = array(
@@ -80,7 +95,7 @@ function overview_install()
         <td align=\"right\" valign=\"top\"><div class=\"smalltext\">{\$val2}</div></td>
         </tr>",
         "sid" => -1
-    );
+        );
     $db->insert_query("templates", $templatearray);
 
     $templatearray = array(
@@ -97,7 +112,7 @@ function overview_install()
         {\$table_content}
         </table></td>",
         "sid" => -1
-    );
+        );
     $db->insert_query("templates", $templatearray);
 
     $templatearray = array(
@@ -108,7 +123,7 @@ function overview_install()
         <td align=\"right\" valign=\"top\"><div class=\"smalltext\">{\$val3}</div></td>
         </tr>",
         "sid" => -1
-    );
+        );
     $db->insert_query("templates", $templatearray);
 
     $templatearray = array(
@@ -125,21 +140,21 @@ function overview_install()
         </td>
         </tr>",
         "sid" => -1
-    );
+        );
     $db->insert_query("templates", $templatearray);
 
-    // Einstellungsgruppe hinzufügen
+    // Insert setting groups
     $overview_group = array(
         "name" => "Overview",
         "title" => "Overview",
         "description" => "Settings for the \"Overview\"-Plugin.",
         "disporder" => 1,
         "isdefault" => 0
-    );
+        );
     $db->insert_query("settinggroups", $overview_group);
     $gid = $db->insert_id();
 
-    // Einstellungen hinzufügen
+    // Insert settings
     $overview_1 = array(
         "name" => "overview_max",
         "title" => "Number of Items",
@@ -148,7 +163,7 @@ function overview_install()
         "value" => 5,
         "disporder" => 1,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_1);
 
     $overview_2 = array(
@@ -159,7 +174,7 @@ function overview_install()
         "value" => 1,
         "disporder" => 2,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_2);
 
     $overview_3 = array(
@@ -170,7 +185,7 @@ function overview_install()
         "value" => "1",
         "disporder" => "3",
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_3);
 
     $overview_4 = array(
@@ -181,7 +196,7 @@ function overview_install()
         "value" => 0,
         "disporder" => 4,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_4);
 
     $overview_5 = array(
@@ -192,7 +207,7 @@ function overview_install()
         "value" => 2,
         "disporder" => 5,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_5);
 
     $overview_6 = array(
@@ -203,7 +218,7 @@ function overview_install()
         "value" => 1,
         "disporder" => 6,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_6);
 
     $overview_7 = array(
@@ -214,7 +229,7 @@ function overview_install()
         "value" => 3,
         "disporder" => 7,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_7);
 
     $overview_8 = array(
@@ -225,7 +240,7 @@ function overview_install()
         "value" => 0,
         "disporder" => 8,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_8);
 
     $overview_9 = array(
@@ -236,7 +251,7 @@ function overview_install()
         "value" => 4,
         "disporder" => 9,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_9);
 
     $overview_10 = array(
@@ -247,7 +262,7 @@ function overview_install()
         "value" => 0,
         "disporder" => 10,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_10);
 
     $overview_11 = array(
@@ -258,7 +273,7 @@ function overview_install()
         "value" => 5,
         "disporder" => 11,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_11);
 
     $overview_12 = array(
@@ -269,7 +284,7 @@ function overview_install()
         "value" => 1,
         "disporder" => 12,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_12);
 
     $overview_13 = array(
@@ -280,7 +295,7 @@ function overview_install()
         "value" => 6,
         "disporder" => 13,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_13);
 
     $overview_14 = array(
@@ -291,7 +306,7 @@ function overview_install()
         "value" => 0,
         "disporder" => 14,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_14);
 
     $overview_15 = array(
@@ -302,7 +317,7 @@ function overview_install()
         "value" => 7,
         "disporder" => 15,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_15);
 
     $overview_16 = array(
@@ -313,7 +328,7 @@ function overview_install()
         "value" => 0,
         "disporder" => 16,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_16);
 
     $overview_17 = array(
@@ -324,7 +339,7 @@ function overview_install()
         "value" => 8,
         "disporder" => 17,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_17);
 
     $overview_18 = array(
@@ -335,7 +350,7 @@ function overview_install()
         "value" => 0,
         "disporder" => 18,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_18);
 
     $overview_19 = array(
@@ -346,7 +361,7 @@ function overview_install()
         "value" => 9,
         "disporder" => 19,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_19);
 
     $overview_20 = array(
@@ -357,7 +372,7 @@ function overview_install()
         "value" => 1,
         "disporder" => 20,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_20);
 
     $overview_21 = array(
@@ -368,7 +383,7 @@ function overview_install()
         "value" => 0,
         "disporder" => 21,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_21);
 
     $overview_22 = array(
@@ -379,7 +394,7 @@ function overview_install()
         "value" => 0,
         "disporder" => 22,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_22);
 
     $overview_23 = array(
@@ -390,7 +405,7 @@ function overview_install()
         "value" => 0,
         "disporder" => 23,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_23);
 
     $overview_24 = array(
@@ -401,7 +416,7 @@ function overview_install()
         "value" => 0,
         "disporder" => 24,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_24);
 
     $overview_25 = array(
@@ -412,7 +427,7 @@ function overview_install()
         "value" => "Enter your message here!",
         "disporder" => 25,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_25);
 
     $overview_26 = array(
@@ -423,7 +438,7 @@ function overview_install()
         "value" => 0,
         "disporder" => 26,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_26);
 
     $overview_27 = array(
@@ -434,7 +449,7 @@ function overview_install()
         "value" => 60,
         "disporder" => 27,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_27);
 
     $overview_28 = array(
@@ -445,7 +460,7 @@ function overview_install()
         "value" => 1,
         "disporder" => 28,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_28);
 
     $overview_29 = array(
@@ -456,19 +471,18 @@ function overview_install()
         "value" => 0,
         "disporder" => 29,
         "gid" => intval($gid)
-    );
+        );
     $db->insert_query("settings", $overview_29);
 
-    // settings.php erneuern
+    // rebuild settings.php
     rebuild_settings();
 }
 
-### Deinstallation ###
 function overview_uninstall()
 {
     global $db;
 
-    // Templates von dieses Plugin entfernen
+    // Remove templates
     $templatearray = array(
         "index_overview",
         "index_overview_2_columns",
@@ -476,24 +490,23 @@ function overview_uninstall()
         "index_overview_3_columns",
         "index_overview_3_columns_row",
         "index_overview_message",
-    );
+        );
     $deltemplates = implode("','", $templatearray);
 
     $db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title in ('{$deltemplates}');");
 
-    // Einstellungsgruppe löschen
+    // Remove setting groups
     $query = $db->query("SELECT gid FROM ".TABLE_PREFIX."settinggroups WHERE name='Overview'");
     $g = $db->fetch_array($query);
     $db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE gid='{$g['gid']}'");
 
-    // Einstellungen löschen
+    // Remove settings
     $db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE gid='{$g['gid']}'");
 
-    // settings.php erneuern
+    // rebuild settings.php
     rebuild_settings();
 }
 
-### Installationsstatus ###
 function overview_is_installed()
 {
     global $db;
@@ -508,10 +521,9 @@ function overview_is_installed()
     return false;
 }
 
-### Aktivierung ###
 function overview_activate()
 {
-    // Variablen für dieses Plugin einfügen
+    // Insert variables into templates
     require MYBB_ROOT."inc/adminfunctions_templates.php";
     find_replace_templatesets("index", '#{\$header}(\r?)\n#', "{\$header}\n{\$overview}\n");
     find_replace_templatesets("index", '#{\$footer}(\r?)\n#', "{\$footer}\n{\$overview_body}\n");
@@ -519,10 +531,9 @@ function overview_activate()
     find_replace_templatesets("index", '#{\$headerinclude}(\r?)\n#', "{\$headerinclude}\n{\$overview_headerinclude}\n");
 }
 
-### Deaktivierung ###
 function overview_deactivate()
 {
-    // Variablen von dieses Plugin entfernen
+    // Remove variables from templates
     require MYBB_ROOT."/inc/adminfunctions_templates.php";
     find_replace_templatesets("index", '#{\$overview}(\r?)\n#', "", 0);
     find_replace_templatesets("index", '#{\$overview_body}(\r?)\n#', "", 0);
@@ -530,9 +541,8 @@ function overview_deactivate()
     find_replace_templatesets("index", '#{\$overview_headerinclude}(\r?)\n#', "", 0);
 }
 
-### Funktionen ###
+/* --- Functions: --- */
 
-// Hauptfunktionen
 function overview()
 {
     global $db, $mybb, $cache, $templates, $theme, $lang, $overview, $collapsed;
@@ -546,25 +556,26 @@ function overview()
     {
         $language = $mybb->settings['bblanguage'];
 
-        // Sprachdatei laden
+        // Load language files
         $lang->load("overview");
 
-        // Anzahl der Spalten ermitteln
+        // Determine number of columns
         $num_columns = overview_num_columns();
 
-        //Nicht sichtbare Foren ausschließen
+        // Exclude unviewable forums
         $overview_unviewwhere = "";
         $overview_unviewable = get_unviewable_forums();
-        if($overview_unviewable) {
+        if($overview_unviewable)
+        {
             $overview_unviewwhere = "AND fid NOT IN ({$overview_unviewable})";
         }
 
-        // Variablen definieren
+        // Define variables
         $overview_content = "";
         $trow_message = "";
         $overview = "";
 
-        // Sortierung auslesen und Daten ausgeben
+        // Determine sort order
         $orderquery = $db->query("
             SELECT name from ".TABLE_PREFIX."settings
             WHERE name IN ('overview_do_newestusers','overview_do_topposters','overview_do_newestthreads','overview_do_mostreplies','overview_do_favouritethreads','overview_do_newestposts','overview_do_bestrepmembers','overview_do_newestpolls','overview_do_nextevents')
@@ -572,19 +583,23 @@ function overview()
         ;");
 
         $collapseinsert1 = $collapseinsert2 = "";
+
+        // Output data
         if($mybb->settings['overview_ajax_onoff'] != 1)
         {
             $expdisplay = "";
+
             if(isset($collapsed['overview_c']) && $collapsed['overview_c'] == "display: show;")
             {
-                    $expcolimage = "collapse_collapsed.gif";
-                    $expdisplay = "display: none;";
-                    $expaltext = "[+]";
+                $expcolimage = "collapse_collapsed.gif";
+                $expdisplay = "display: none;";
+                $expaltext = "[+]";
             }
+
             else
             {
-                    $expcolimage = "collapse.gif";
-                    $expaltext = "[-]";
+                $expcolimage = "collapse.gif";
+                $expaltext = "[-]";
             }
 
             $collapseinsert1 = "<div class=\"expcolimage\"><img src=\"{$theme['imgdir']}/{$expcolimage}\" id=\"overview_img\" class=\"expander\" alt=\"{$expaltext}\" title=\"{$expaltext}\" /></div>";
@@ -596,7 +611,7 @@ function overview()
             $overview_content .= call_user_func($order['name'], $overview_unviewwhere);
         }
 
-        // Nachricht zeigen?
+        // Show message?
         if($mybb->settings['overview_trow_message_onoff'] == "1")
         {
             require_once  MYBB_ROOT."inc/class_parser.php";
@@ -611,7 +626,7 @@ function overview()
             eval("\$trow_message = \"".$templates->get("index_overview_message")."\";");
         }
 
-        // Template laden
+        // Load template
         eval("\$overview = \"".$templates->get("index_overview")."\";");
 
         if($mybb->settings['overview_ajax_onoff'] == 1)
@@ -648,10 +663,12 @@ function overview_end()
         {
             $loaddisplay = 1;
         }
+
         else
         {
             $loaddisplay = 0;
         }
+
         $intervall = $mybb->settings['overview_ajax_time'] * 1000;
         $overview_headerinclude = "<script type=\"text/javascript\" src=\"jscripts/overview.js\"></script>\n<script language=\"JavaScript\" type=\"text/javascript\">\nvar req = createXMLHttpRequest();\n</script>";
         $overview_body_onload = " onload=\"dooverview(".$loaddisplay.");\"";
@@ -661,22 +678,20 @@ function overview_end()
     }
 }
 
-// Neueste Mitglieder
+// Newest users
 function overview_do_newestusers() {
 
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
     if($mybb->settings['overview_newest_members'] == 1)
     {
-
-        // Hintergrund festlegen
         $trow = overview_trowcolor($trow);
 
         $table_heading = $lang->overview_newest_members;
         $column1_heading = $lang->overview_username;
         $column2_heading = $lang->overview_posts;
 
-        // Daten für neueste Benutzer aus Datenbank auslesen
+        // Fetch data for newest user from database
         $query = $db->query("
             SELECT username, postnum, uid, usergroup, displaygroup
             FROM ".TABLE_PREFIX."users
@@ -684,35 +699,34 @@ function overview_do_newestusers() {
             LIMIT 0,{$mybb->settings['overview_max']}
         ;");
 
-        // Daten ausgeben
+        // Print data
         while ($users = $db->fetch_array($query))
         {
             $val1 = overview_parseuser($users['uid'], $users['username'], $users['usergroup'], $users['displaygroup']);
             $val2 = "<a href=\"search.php?action=finduser&amp;uid={$users['uid']}\">{$users['postnum']}</a>";
             eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
         }
+
         eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
     }
 
     return $output;
 }
 
-// Top Poster
-function overview_do_topposters() {
-
+// Top posters
+function overview_do_topposters()
+{
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
     if($mybb->settings['overview_top_posters'] == 1)
     {
-
-        // Hintergrund festlegen
         $trow = overview_trowcolor($trow);
 
         $table_heading = $lang->overview_top_posters;
         $column1_heading = $lang->overview_username;
         $column2_heading = $lang->overview_posts;
 
-        // Daten für Top Poster aus Datenbank auslesen
+        // Fetch data for top posters from database
         $query = $db->query("
             SELECT username, postnum, uid, usergroup, displaygroup
             FROM ".TABLE_PREFIX."users
@@ -720,27 +734,27 @@ function overview_do_topposters() {
             LIMIT 0,{$mybb->settings['overview_max']}
         ;");
 
-        // Daten ausgeben
+        // Print data
         while ($users = $db->fetch_array($query))
         {
             $val1 = overview_parseuser($users['uid'], $users['username'], $users['usergroup'], $users['displaygroup']);
             $val2 = "<a href=\"search.php?action=finduser&amp;uid={$users['uid']}\">{$users['postnum']}</a>";
             eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
         }
+
         eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
     }
 
     return $output;
 }
 
-// Neueste Themen
-function overview_do_newestthreads($overview_unviewwhere) {
-
+// Newest threads
+function overview_do_newestthreads($overview_unviewwhere)
+{
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
     if($mybb->settings['overview_newest_threads'] == 1)
     {
-
         // Hintergrund festlegen
         $trow = overview_trowcolor($trow);
 
@@ -749,7 +763,7 @@ function overview_do_newestthreads($overview_unviewwhere) {
         $column2_heading = $lang->overview_author;
         $column3_heading = $lang->overview_replies;
 
-        // Daten für neueste Themen aus Datenbank auslesen
+        // Fetch data
         $query = $db->query("
             SELECT subject, username, uid, tid, replies, icon
             FROM ".TABLE_PREFIX."threads
@@ -758,7 +772,7 @@ function overview_do_newestthreads($overview_unviewwhere) {
             LIMIT 0,{$mybb->settings['overview_max']}
         ;");
 
-        // Daten ausgeben
+        // Print data
         while ($threads = $db->fetch_array($query))
         {
             $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['tid']);
@@ -766,28 +780,27 @@ function overview_do_newestthreads($overview_unviewwhere) {
             $val3 = "<a href=\"javascript:MyBB.whoPosted({$threads['tid']});\">{$threads['replies']}</a>";
             eval("\$table_content .= \"".$templates->get("index_overview_3_columns_row")."\";");
         }
+
         eval("\$output = \"".$templates->get("index_overview_3_columns")."\";");
     }
 
     return $output;
 }
 
-// Themen mit meisten Antworten
-function overview_do_mostreplies($overview_unviewwhere) {
-
+// Most replies
+function overview_do_mostreplies($overview_unviewwhere)
+{
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
     if($mybb->settings['overview_most_replies'] == 1)
     {
-
-        // Hintergrund festlegen
         $trow = overview_trowcolor($trow);
 
         $table_heading = $lang->overview_most_replies;
         $column1_heading = $lang->overview_topic;
         $column2_heading = $lang->overview_replies;
 
-        // Daten für Themen mit meisten Antworten aus Datenbank auslesen
+        // Fetch data
         $query = $db->query("
             SELECT subject, tid, replies, icon
             FROM ".TABLE_PREFIX."threads
@@ -796,35 +809,34 @@ function overview_do_mostreplies($overview_unviewwhere) {
             LIMIT 0,{$mybb->settings['overview_max']}
         ;");
 
-        // Daten ausgeben
+        // Print data
         while($threads = $db->fetch_array($query))
         {
             $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['tid']);
             $val2 = "<a href=\"javascript:MyBB.whoPosted({$threads['tid']});\">{$threads['replies']}</a>";
             eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
         }
+
         eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
     }
 
     return $output;
 }
 
-// Beliebteste Themen
-function overview_do_favouritethreads($overview_unviewwhere) {
-
+// Favourite threads
+function overview_do_favouritethreads($overview_unviewwhere)
+{
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
     if($mybb->settings['overview_favourite_threads'] == 1)
     {
-
-        // Hintergrund festlegen
         $trow = overview_trowcolor($trow);
 
         $table_heading = $lang->overview_favourite_threads;
         $column1_heading = $lang->overview_topic;
         $column2_heading = $lang->overview_views;
 
-        // Daten für beliebteste Themen aus Datenbank auslesen
+        // Fetch data
         $query = $db->query("
             SELECT subject, tid, views, icon
             FROM ".TABLE_PREFIX."threads
@@ -833,35 +845,34 @@ function overview_do_favouritethreads($overview_unviewwhere) {
             LIMIT 0,{$mybb->settings['overview_max']}
         ;");
 
-        // Daten ausgeben
+        // Print data
         while ($threads = $db->fetch_array($query))
         {
             $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['tid']);
             $val2 = $threads['views'];
             eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
         }
+
         eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
     }
 
     return $output;
 }
 
-// Neueste Beiträge
-function overview_do_newestposts($overview_unviewwhere) {
-
+// Newest posts
+function overview_do_newestposts($overview_unviewwhere)
+{
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
     if($mybb->settings['overview_newest_posts'] == 1)
     {
-
-        // Hintergrund festlegen
         $trow = overview_trowcolor($trow);
 
         $table_heading = $lang->overview_newest_posts;
         $column1_heading = $lang->overview_subject;
         $column2_heading = $lang->overview_author;
 
-        // Daten für neueste Beiträge aus Datenbank auslesen
+        // Fetch data
         $query = $db->query("
             SELECT subject, username, uid, pid, tid, icon
             FROM ".TABLE_PREFIX."posts
@@ -870,28 +881,27 @@ function overview_do_newestposts($overview_unviewwhere) {
             LIMIT 0,{$mybb->settings['overview_max']}
         ;");
 
-        // Daten ausgeben
+        // Print data
         while($posts = $db->fetch_array($query))
         {
             $val1 = overview_parsesubject($posts['subject'], $posts['icon'], $posts['tid'], $posts['pid'], 0, 1);
             $val2 = overview_parseuser($posts['uid'], $posts['username']);
             eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
         }
+
         eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
     }
 
     return $output;
 }
 
-// Nächste Termine
-function overview_do_nextevents() {
-
+// Next events
+function overview_do_nextevents()
+{
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
     if($mybb->settings['overview_next_events'] == 1)
     {
-
-        // Hintergrund festlegen
         $trow = overview_trowcolor($trow);
 
         $table_heading = $lang->overview_next_events;
@@ -900,7 +910,7 @@ function overview_do_nextevents() {
 
         if($mybb->usergroup['canviewcalendar'] == 1)
         {
-            // Berechtigungen zusammensetzen
+            // Permissions
             $query = $db->query("
                 SELECT cid
                 FROM ".TABLE_PREFIX."calendarpermissions
@@ -908,6 +918,7 @@ function overview_do_nextevents() {
             ;");
 
             $cids = $sep = "";
+
             if($db->num_rows($query) != 0)
             {
                 while($groups = $db->fetch_array($query))
@@ -915,10 +926,11 @@ function overview_do_nextevents() {
                     $cids .= $sep.$groups['cid'];
                     $sep = ",";
                 }
+
                 $cids = "AND e.cid NOT IN ({$cids})";
             }
 
-            // Daten für nächste Events aus Datenbank auslesen
+            // Fetch data
             $query = $db->query("
                 SELECT e.eid, e.name, e.starttime, e.uid, u.username, u.usergroup, u.displaygroup
                 FROM ".TABLE_PREFIX."events e
@@ -928,7 +940,7 @@ function overview_do_nextevents() {
                 LIMIT 0,{$mybb->settings['overview_max']}
             ;");
 
-            // Daten ausgeben
+            // Print data
             while($events = $db->fetch_array($query))
             {
                 $events['name'] = my_date($mybb->settings['dateformat'], $events['starttime']).": ".$events['name'];
@@ -937,28 +949,27 @@ function overview_do_nextevents() {
                 eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
             }
         }
+
         eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
     }
 
     return $output;
 }
 
-// Neueste Umfragen
-function overview_do_newestpolls($overview_unviewwhere) {
-
+// Newest polls
+function overview_do_newestpolls($overview_unviewwhere)
+{
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
     if($mybb->settings['overview_newest_polls'] == 1)
     {
-
-        // Hintergrund festlegen
         $trow = overview_trowcolor($trow);
 
         $table_heading = $lang->overview_newest_polls;
         $column1_heading = $lang->overview_question;
         $column2_heading = $lang->overview_author;
 
-        // Daten für neueste Umfragen aus Datenbank auslesen
+        // Fetch data
         $query = $db->query("
             SELECT p.question, p.tid, t.uid, t.username, t.icon
             FROM ".TABLE_PREFIX."polls p
@@ -968,35 +979,34 @@ function overview_do_newestpolls($overview_unviewwhere) {
             LIMIT 0,{$mybb->settings['overview_max']}
         ;");
 
-        // Daten ausgeben
+        // Print data
         while($polls = $db->fetch_array($query))
         {
             $val1 = overview_parsesubject($polls['question'], $polls['icon'], $polls['tid']);
             $val2 = overview_parseuser($polls['uid'], $polls['username']);
             eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
         }
+
         eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
     }
 
     return $output;
 }
 
-// Bestbewertete user
-function overview_do_bestrepmembers() {
-
+// Members with the best reputation
+function overview_do_bestrepmembers()
+{
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
     if($mybb->settings['overview_bestrep_members'] == 1)
     {
-
-        // Hintergrund festlegen
         $trow = overview_trowcolor($trow);
 
         $table_heading = $lang->overview_bestrep_members;
         $column1_heading = $lang->overview_username;
         $column2_heading = $lang->overview_reputation;
 
-        // Daten für neueste Benutzer aus Datenbank auslesen
+        // Fetch data
         $query = $db->query("
             SELECT username, reputation, uid, usergroup, displaygroup
             FROM ".TABLE_PREFIX."users
@@ -1004,20 +1014,21 @@ function overview_do_bestrepmembers() {
             LIMIT 0,{$mybb->settings['overview_max']}
         ;");
 
-        // Daten ausgeben
+        // Print data
         while ($users = $db->fetch_array($query))
         {
             $val1 = overview_parseuser($users['uid'], $users['username'], $users['usergroup'], $users['displaygroup']);
             $val2 = get_reputation($users['reputation'], $users['uid']);
             eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
         }
+
         eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
     }
 
     return $output;
 }
 
-// Betreff verarbeiten
+// Parse subject
 function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $removere=0)
 {
     global $mybb, $parser, $cache;
@@ -1050,10 +1061,12 @@ function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $remov
     {
         $link = get_post_link($pid, $tid)."#pid".$pid;
     }
+
     else if($eid)
     {
         $link = get_event_link($eid);
     }
+
     else
     {
         $link = get_thread_link($tid);
@@ -1066,6 +1079,7 @@ function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $remov
         $icon = $icon_cache[$icon];
         $icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" style=\"vertical-align: middle;\" />&nbsp;";
     }
+
     else
     {
         $icon = "";
@@ -1074,7 +1088,7 @@ function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $remov
     return "<a href=\"{$link}\" title=\"{$subjectfull}\">{$subject}</a>";
 }
 
-// User verarbeiten
+// Parse user
 function overview_parseuser($uid, $username, $usergroup=0, $displaygroup=0)
 {
     global $mybb, $db, $lang;
@@ -1100,6 +1114,7 @@ function overview_parseuser($uid, $username, $usergroup=0, $displaygroup=0)
             $usergroup = $user['usergroup'];
             $displaygroup = $user['displaygroup'];
         }
+
         $username = format_name($username, $usergroup, $displaygroup);
     }
 
@@ -1108,25 +1123,28 @@ function overview_parseuser($uid, $username, $usergroup=0, $displaygroup=0)
         $link = get_profile_link($uid);
         return "<a href=\"{$link}\">{$username}</a>";
     }
+
     else
     {
         return $username;
     }
 }
 
-// Tablerow Farbe ändern
+// Trow color
 function overview_trowcolor($trow)
 {
     if(!isset($trow))
     {
         $trow = "trow1";
     }
+
     else
     {
         if ($trow == "trow1")
         {
             $trow = "trow2";
         }
+
         else if($trow == "trow2")
         {
             $trow = "trow1";
@@ -1136,7 +1154,7 @@ function overview_trowcolor($trow)
     return $trow;
 }
 
-// Spaltenanzahl ermitteln
+// Determine number of columns
 function overview_num_columns()
 {
     global $mybb;
@@ -1152,7 +1170,7 @@ function overview_num_columns()
         'overview_bestrep_members',
         'overview_newest_polls',
         'overview_next_events'
-    );
+        );
 
     foreach($settings as $setting)
     {
@@ -1165,24 +1183,5 @@ function overview_num_columns()
     return $i;
 }
 
-// Einstellungen erneuern
-if(!function_exists("rebuild_settings"))
-{
-
-    function rebuild_settings()
-    {
-        global $db;
-
-        $query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings ORDER BY title ASC");
-        while($setting = $db->fetch_array($query))
-        {
-            $setting['value'] = addslashes($setting['value']);
-            $settings .= "\$settings['".$setting['name']."'] = \"".$setting['value']."\";\n";
-        }
-        $settings = "<?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n$settings\n?>";
-        $file = fopen(MYBB_ROOT."inc/settings.php", "w");
-        fwrite($file, $settings);
-        fclose($file);
-    }
-}
+/* --- End of file. --- */
 ?>
