@@ -26,7 +26,7 @@ function overview_info()
         "website"       => "http://www.mybboard.de",
         "author"        => "MyBBoard.de",
         "authorsite"    => "http://www.mybboard.de",
-        "version"       => "3.2.1",
+        "version"       => "3.2.2",
         "guid"          => "79710704156952a4cf8793808c6ab3ea",
         "compatibility" => "14*"
     );
@@ -383,9 +383,9 @@ function overview_install()
     $db->insert_query("settings", $overview_22);
 
     $overview_23 = array(
-        "name" => "overview_trow_message_onoff",
-        "title" => "Show message?",
-        "description" => "Choose if you want to show a message.",
+        "name" => "overview_showicon",
+        "title" => "Show post icons?",
+        "description" => "Do you want to display post icons in front of subjects?",
         "optionscode" => "yesno",
         "value" => 0,
         "disporder" => 23,
@@ -394,59 +394,70 @@ function overview_install()
     $db->insert_query("settings", $overview_23);
 
     $overview_24 = array(
-        "name" => "overview_trow_message",
-        "title" => "Message",
-        "description" => "Enter the message. You can use MyCode.",
-        "optionscode" => "textarea",
-        "value" => "Enter your message here!",
+        "name" => "overview_trow_message_onoff",
+        "title" => "Show message?",
+        "description" => "Choose if you want to show a message.",
+        "optionscode" => "yesno",
+        "value" => 0,
         "disporder" => 24,
         "gid" => intval($gid)
     );
     $db->insert_query("settings", $overview_24);
 
     $overview_25 = array(
-        "name" => "overview_ajax_onoff",
-        "title" => "Ajax",
-        "description" => "Do you want to enable the Ajax functionality so that the overview box reloads itself?",
-        "optionscode" => "yesno",
-        "value" => 0,
+        "name" => "overview_trow_message",
+        "title" => "Message",
+        "description" => "Enter the message. You can use MyCode.",
+        "optionscode" => "textarea",
+        "value" => "Enter your message here!",
         "disporder" => 25,
         "gid" => intval($gid)
     );
     $db->insert_query("settings", $overview_25);
 
     $overview_26 = array(
-        "name" => "overview_ajax_time",
-        "title" => "Period",
-        "description" => "Enter the period of time after that the overview box should reload itself (Seconds)?",
-        "optionscode" => "text",
-        "value" => 60,
+        "name" => "overview_ajax_onoff",
+        "title" => "Ajax",
+        "description" => "Do you want to enable the Ajax functionality so that the overview box reloads itself?",
+        "optionscode" => "yesno",
+        "value" => 0,
         "disporder" => 26,
         "gid" => intval($gid)
     );
     $db->insert_query("settings", $overview_26);
 
     $overview_27 = array(
-        "name" => "overview_ajax_loading",
-        "title" => "Loading",
-        "description" => "Do you want to show a \"Loading\"-Window?",
-        "optionscode" => "yesno",
-        "value" => 1,
+        "name" => "overview_ajax_time",
+        "title" => "Period",
+        "description" => "Enter the period of time after that the overview box should reload itself (Seconds)?",
+        "optionscode" => "text",
+        "value" => 60,
         "disporder" => 27,
         "gid" => intval($gid)
     );
     $db->insert_query("settings", $overview_27);
 
     $overview_28 = array(
+        "name" => "overview_ajax_loading",
+        "title" => "Loading",
+        "description" => "Do you want to show a \"Loading\"-Window?",
+        "optionscode" => "yesno",
+        "value" => 1,
+        "disporder" => 28,
+        "gid" => intval($gid)
+    );
+    $db->insert_query("settings", $overview_28);
+
+    $overview_29 = array(
         "name" => "overview_usergroups",
         "title" => "Disable overview for usergroups",
         "description" => "Enter the IDs of the usergroups that should not see the overview table (0 = none). Seperate several IDs with commas.",
         "optionscode" => "text",
         "value" => 0,
-        "disporder" => 28,
+        "disporder" => 29,
         "gid" => intval($gid)
     );
-    $db->insert_query("settings", $overview_28);
+    $db->insert_query("settings", $overview_29);
 
     // settings.php erneuern
     rebuild_settings();
@@ -576,7 +587,7 @@ function overview()
                     $expaltext = "[-]";
             }
 
-            $collapseinsert1 = "<div class=\"expcolimage\"><img src=\"{$theme['imgdir']}/{$expcolimage}\" id=\"overview_img\" class=\"expander\" alt=\"{$expaltext}\" title=\"{\$expaltext}\" /></div>";
+            $collapseinsert1 = "<div class=\"expcolimage\"><img src=\"{$theme['imgdir']}/{$expcolimage}\" id=\"overview_img\" class=\"expander\" alt=\"{$expaltext}\" title=\"{$expaltext}\" /></div>";
             $collapseinsert2 = " style=\"{$expdisplay}\" id=\"overview_e\"";
         }
 
@@ -624,9 +635,14 @@ function overview_end()
 {
     global $mybb, $intervall, $overview_headerinclude, $overview_body_onload, $overview_body_onload2, $overview, $overview_body;
 
-    $overview_headerinclude = $overview_body_onload = $overview_body;
+    $overview_headerinclude = $overview_body_onload = $overview_body_onload2 = $overview_body = "";
 
-    if($mybb->settings['overview_ajax_onoff'] == 1)
+    if($mybb->settings['overview_usergroups'] != 0)
+    {
+        $overviewgroups = explode(",", $mybb->settings['overview_usergroups']);
+    }
+
+    if($mybb->settings['overview_ajax_onoff'] == 1 && ($mybb->settings['overview_usergroups'] == 0 || !in_array($mybb->user['usergroup'], $overviewgroups)))
     {
         if($mybb->settings['overview_ajax_loading'] == 1)
         {
@@ -735,7 +751,7 @@ function overview_do_newestthreads($overview_unviewwhere) {
 
         // Daten für neueste Themen aus Datenbank auslesen
         $query = $db->query("
-            SELECT subject, username, uid, tid, replies
+            SELECT subject, username, uid, tid, replies, icon
             FROM ".TABLE_PREFIX."threads
             WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
             ORDER BY dateline DESC
@@ -745,7 +761,7 @@ function overview_do_newestthreads($overview_unviewwhere) {
         // Daten ausgeben
         while ($threads = $db->fetch_array($query))
         {
-            $val1 = overview_parsesubject($threads['subject'], $threads['tid']);
+            $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['tid']);
             $val2 = overview_parseuser($threads['uid'], $threads['username']);
             $val3 = "<a href=\"javascript:MyBB.whoPosted({$threads['tid']});\">{$threads['replies']}</a>";
             eval("\$table_content .= \"".$templates->get("index_overview_3_columns_row")."\";");
@@ -773,7 +789,7 @@ function overview_do_mostreplies($overview_unviewwhere) {
 
         // Daten für Themen mit meisten Antworten aus Datenbank auslesen
         $query = $db->query("
-            SELECT subject, tid, replies
+            SELECT subject, tid, replies, icon
             FROM ".TABLE_PREFIX."threads
             WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
             ORDER BY replies DESC
@@ -783,7 +799,7 @@ function overview_do_mostreplies($overview_unviewwhere) {
         // Daten ausgeben
         while($threads = $db->fetch_array($query))
         {
-            $val1 = overview_parsesubject($threads['subject'], $threads['tid']);
+            $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['tid']);
             $val2 = "<a href=\"javascript:MyBB.whoPosted({$threads['tid']});\">{$threads['replies']}</a>";
             eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
         }
@@ -810,7 +826,7 @@ function overview_do_favouritethreads($overview_unviewwhere) {
 
         // Daten für beliebteste Themen aus Datenbank auslesen
         $query = $db->query("
-            SELECT subject, tid, views
+            SELECT subject, tid, views, icon
             FROM ".TABLE_PREFIX."threads
             WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
             ORDER BY views DESC
@@ -820,7 +836,7 @@ function overview_do_favouritethreads($overview_unviewwhere) {
         // Daten ausgeben
         while ($threads = $db->fetch_array($query))
         {
-            $val1 = overview_parsesubject($threads['subject'], $threads['tid']);
+            $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['tid']);
             $val2 = $threads['views'];
             eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
         }
@@ -847,7 +863,7 @@ function overview_do_newestposts($overview_unviewwhere) {
 
         // Daten für neueste Beiträge aus Datenbank auslesen
         $query = $db->query("
-            SELECT subject, username, uid, pid, tid
+            SELECT subject, username, uid, pid, tid, icon
             FROM ".TABLE_PREFIX."posts
             WHERE visible='1' {$overview_unviewwhere}
             ORDER BY dateline DESC
@@ -857,7 +873,7 @@ function overview_do_newestposts($overview_unviewwhere) {
         // Daten ausgeben
         while($posts = $db->fetch_array($query))
         {
-            $val1 = overview_parsesubject($posts['subject'], $posts['tid'], $posts['pid'], 0, 1);
+            $val1 = overview_parsesubject($posts['subject'], $posts['icon'], $posts['tid'], $posts['pid'], 0, 1);
             $val2 = overview_parseuser($posts['uid'], $posts['username']);
             eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
         }
@@ -944,7 +960,7 @@ function overview_do_newestpolls($overview_unviewwhere) {
 
         // Daten für neueste Umfragen aus Datenbank auslesen
         $query = $db->query("
-            SELECT p.question, p.tid, t.uid, t.username
+            SELECT p.question, p.tid, t.uid, t.username, t.icon
             FROM ".TABLE_PREFIX."polls p
             LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
             WHERE t.visible='1' {$overview_unviewwhere} AND t.closed NOT LIKE 'moved|%'
@@ -955,7 +971,7 @@ function overview_do_newestpolls($overview_unviewwhere) {
         // Daten ausgeben
         while($polls = $db->fetch_array($query))
         {
-            $val1 = overview_parsesubject($polls['question'], $polls['tid']);
+            $val1 = overview_parsesubject($polls['question'], $polls['icon'], $polls['tid']);
             $val2 = overview_parseuser($polls['uid'], $polls['username']);
             eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
         }
@@ -1002,9 +1018,9 @@ function overview_do_bestrepmembers() {
 }
 
 // Betreff verarbeiten
-function overview_parsesubject($subject, $tid=0, $pid=0, $eid=0, $removere=0)
+function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $removere=0)
 {
-    global $mybb, $parser;
+    global $mybb, $parser, $cache;
 
     if($mybb->settings['overview_show_re'] == 0 && $removere == 1)
     {
@@ -1043,6 +1059,18 @@ function overview_parsesubject($subject, $tid=0, $pid=0, $eid=0, $removere=0)
         $link = get_thread_link($tid);
     }
 
+    $icon_cache = $cache->read("posticons");
+
+    if($mybb->settings['overview_showicon'] != 0 && $icon > 0 && $icon_cache[$icon])
+    {
+        $icon = $icon_cache[$icon];
+        $icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" style=\"vertical-align: middle;\" />&nbsp;";
+    }
+    else
+    {
+        $icon = "";
+    }
+
     return "<a href=\"{$link}\" title=\"{$subjectfull}\">{$subject}</a>";
 }
 
@@ -1055,8 +1083,11 @@ function overview_parseuser($uid, $username, $usergroup=0, $displaygroup=0)
 
     if(!$uid)
     {
-        $username = $lang->guest;
         $usergroup = 1;
+        if($username == "Guest")
+        {
+            $username = $lang->guest;
+        }
     }
 
     if($mybb->settings['overview_usernamestyle'] == 1)

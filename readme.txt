@@ -1,7 +1,7 @@
 ### INFORMATION ###
 
 Plugin: Overview
-Version 3.2.1
+Version 3.2.2
 Autor: MyBBoard.de
 Website: http://www.mybboard.de
 
@@ -31,6 +31,12 @@ You agree that the author of this plugin will not be held responsible for anythi
 License: See license.txt
 
 ### CHANGELOG ###
+
+3.2.2
+- New: You can display post icons in front of subjects
+- New column: Next birthdays
+- Several fixes for next events column
+- Fixed several small issues
 
 3.2.1
 - Fix: Guest as username not displayed if username formatting is enabled
