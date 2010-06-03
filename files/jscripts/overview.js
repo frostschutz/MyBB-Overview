@@ -1,5 +1,3 @@
-// JavaScript Document
-
 // Request erstellen
 function createXMLHttpRequest() {
 
@@ -20,7 +18,7 @@ function createXMLHttpRequest() {
             }
         }
     }
-    
+
     return ab;
 }
 
@@ -29,14 +27,10 @@ function createXMLHttpRequest() {
 function handleResponse() {
 
     if(req.readyState == 4){
-        if (req.status == 200) {
-            var response = req.responseText;
-            var update = new Array();
-            document.getElementById('overview').innerHTML = response;
-            document.getElementById('overview_load').innerHTML = "";
-        } else {
-            alert('Übersicht: Fehler!');
-        }
+        var response = req.responseText;
+        var update = new Array();
+        document.getElementById('overview').innerHTML = response;
+        document.getElementById('overview_load').innerHTML = "";
     }
 }
 
@@ -44,9 +38,9 @@ function handleResponse() {
 function dooverview(wait){
 
     if (wait == "1"){
-        document.getElementById('overview_load').innerHTML = "<div style=\"text-align: center; margin: 5px auto auto 5px; width: 200px; position: absolute;\"><table style=\"margin: auto auto;\" border=\"0\" cellpadding=\"3\" cellspacing=\"0\" class=\"tborder\"><tr class=\"trow1\"><td><span class=\"smalltext\"><img src=\"images/overview_loading.gif\" alt=\"Loading\" width=\"12\" height=\"12\" /> Loading...</span></td></tr><table></div>";
+        document.getElementById('overview_load').innerHTML = "<div style=\"text-align: center; margin: 5px auto auto 5px; width: 200px; position: absolute;\"><table style=\"margin: auto auto;\" border=\"0\" cellpadding=\"3\" cellspacing=\"0\" class=\"tborder\"><tr class=\"trow1\"><td><span class=\"smalltext\"><img src=\"images/spinner.gif\" alt=\"Loading\" width=\"12\" height=\"12\" /> Loading...</span></td></tr><table></div>";
     }
-    req.open('GET', 'overview.php');
+    req.open('GET', 'xmlhttp.php?action=overview');
     req.onreadystatechange = handleResponse;
     req.send(null);
 }
