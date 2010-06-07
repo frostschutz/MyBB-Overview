@@ -930,12 +930,15 @@ function overview_do_nextevents()
                 $cids = "AND e.cid NOT IN ({$cids})";
             }
 
+            // TODO: Instead of substracting 24 hours, align to the users timezone boundary.
+            $today = TIME_NOW - 60*60*24;
+
             // Fetch data
             $query = $db->query("
                 SELECT e.eid, e.name, e.starttime, e.uid, u.username, u.usergroup, u.displaygroup
                 FROM ".TABLE_PREFIX."events e
                 LEFT JOIN ".TABLE_PREFIX."users u ON (e.uid=u.uid)
-                WHERE e.visible = '1' AND (e.private = '0' OR e.uid = '".intval($mybb->user['uid'])."') AND e.starttime > '".TIME_NOW."' {$cids}
+                WHERE e.visible = '1' AND (e.private = '0' OR e.uid = '".intval($mybb->user['uid'])."') AND (e.starttime > '{$today}' OR e.endtime > '{$today}') {$cids}
                 ORDER BY starttime ASC
                 LIMIT 0,{$mybb->settings['overview_max']}
             ;");
@@ -944,7 +947,7 @@ function overview_do_nextevents()
             while($events = $db->fetch_array($query))
             {
                 $events['name'] = my_date($mybb->settings['dateformat'], $events['starttime']).": ".$events['name'];
-                $val1 = overview_parsesubject($events['name'], 0, 0, $events['eid'], 0);
+                $val1 = overview_parsesubject($events['name'], 0, 0, 0, $events['eid'], 0);
                 $val2 = overview_parseuser($events['uid'], $events['username'], $events['usergroup'], $events['displaygroup']);
                 eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
             }
