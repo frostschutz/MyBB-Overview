@@ -143,12 +143,17 @@ function overview_install()
         );
     $db->insert_query("templates", $templatearray);
 
+    $query = $db->query("SELECT MAX(disporder) as disporder
+                         FROM ".TABLE_PREFIX."settinggroups");
+    $row = $db->fetch_array($query);
+    $disporder = $row['disporder'] + 1;
+
     // Insert setting groups
     $overview_group = array(
         "name" => "Overview",
         "title" => "Overview",
         "description" => "Settings for the \"Overview\"-Plugin.",
-        "disporder" => 1,
+        "disporder" => $disporder,
         "isdefault" => 0
         );
     $db->insert_query("settinggroups", $overview_group);
