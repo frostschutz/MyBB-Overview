@@ -376,7 +376,7 @@ function overview_install()
     $db->insert_query("settings", $overview_20);
 
     $overview_21 = array(
-        "name" => "overview_subjects_lenght",
+        "name" => "overview_subjects_length",
         "title" => "Number of Characters",
         "description" => "How many characters of subjects should be shown (0 = show all)?",
         "optionscode" => "text",
@@ -1048,11 +1048,11 @@ function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $remov
 
     $subjectfull = $subject = $parser->parse_badwords($subject);
 
-    if($mybb->settings['overview_subjects_lenght'] != 0)
+    if($mybb->settings['overview_subjects_length'] != 0)
     {
-        if(my_strlen($subject) > $mybb->settings['overview_subjects_lenght'])
+        if(my_strlen($subject) > $mybb->settings['overview_subjects_length'])
         {
-            $subject = my_substr($subject, 0, $mybb->settings['overview_subjects_lenght'])."...";
+            $subject = my_substr($subject, 0, $mybb->settings['overview_subjects_length'])."...";
         }
     }
 
