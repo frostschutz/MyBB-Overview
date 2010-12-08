@@ -26,9 +26,21 @@ if(!defined("IN_MYBB"))
 
 /* --- Hooks: --- */
 
-$plugins->add_hook("index_start", "overview");
+// AJAX hook.
 $plugins->add_hook("xmlhttp", "overview_ajax");
-$plugins->add_hook("index_end", "overview_end");
+
+// Index hooks (add only if not disabled for index)
+global $settings;
+
+if(!$settings['overview_noindex'])
+{
+    $plugins->add_hook("index_start", "overview");
+    $plugins->add_hook("index_end", "overview_end");
+}
+
+// Custom hooks that are safe to call on custom pages.
+$plugins->add_hook("overview_start", "overview");
+$plugins->add_hook("overview_end", "overview_end");
 
 /* --- Plugin-API: --- */
 
@@ -481,6 +493,17 @@ function overview_install()
         "gid" => intval($gid)
         );
     $db->insert_query("settings", $overview_29);
+
+    $overview_30 = array(
+        "name" => "overview_noindex",
+        "title" => "Hide overview from index page",
+        "description" => "If you don't want the overview to display on the index page, say yes. This is only useful if you make a custom overview page.",
+        "optionscode" => "yesno",
+        "value" => 0,
+        "disporder" => 30,
+        "gid" => intval($gid),
+        );
+    $db->insert_query("settings", $overview_30);
 
     // rebuild settings.php
     rebuild_settings();
