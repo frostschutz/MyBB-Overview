@@ -50,11 +50,14 @@ function overview_info()
 
 function overview_install()
 {
+    // Clean up to avoid double overview effect.
+    overview_uninstall();
+
     global $db;
 
     // Insert templates
     $templatearray = array(
-        "title" => "index_overview",
+        "title" => "overview",
         "template" => "<table width=\"100%\" border=\"0\" cellspacing=\"{\$theme[\'borderwidth\']}\" cellpadding=\"0\" class=\"tborder\">
         <thead>
         <tr><td colspan=\"{\$num_columns}\"><table border=\"0\" cellspacing=\"0\" cellpadding=\"{\$theme[\'tablespace\']}\" width=\"100%\"><tr class=\"thead\"><td>{\$collapseinsert1}<strong>{\$lang->overview_overview}</strong></td></tr></table></td>
@@ -73,7 +76,7 @@ function overview_install()
     $db->insert_query("templates", $templatearray);
 
     $templatearray = array(
-        "title" => "index_overview_2_columns",
+        "title" => "overview_2_columns",
         "template" => "<td valign=\"top\" class=\"{\$trow}\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"{\$theme[\'tablespace\']}\">
         <tr class=\"tcat\">
         <td colspan=\"2\" valign=\"top\"><strong>{\$table_heading}</strong></td>
@@ -89,7 +92,7 @@ function overview_install()
     $db->insert_query("templates", $templatearray);
 
     $templatearray = array(
-        "title" => "index_overview_2_columns_row",
+        "title" => "overview_2_columns_row",
         "template" => "<tr class=\"{\$trow}\">
         <td valign=\"top\"><div class=\"smalltext\">{\$val1}</div></td>
         <td align=\"right\" valign=\"top\"><div class=\"smalltext\">{\$val2}</div></td>
@@ -99,7 +102,7 @@ function overview_install()
     $db->insert_query("templates", $templatearray);
 
     $templatearray = array(
-        "title" => "index_overview_3_columns",
+        "title" => "overview_3_columns",
         "template" => "<td valign=\"top\" class=\"{\$trow}\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"{\$theme[\'tablespace\']}\">
         <tr class=\"tcat\">
         <td colspan=\"3\" valign=\"top\"><strong>{\$table_heading}</strong></td>
@@ -116,7 +119,7 @@ function overview_install()
     $db->insert_query("templates", $templatearray);
 
     $templatearray = array(
-        "title" => "index_overview_3_columns_row",
+        "title" => "overview_3_columns_row",
         "template" => "<tr class=\"{\$trow}\">
         <td valign=\"top\"><div class=\"smalltext\">{\$val1}</div></td>
         <td valign=\"top\"><div class=\"smalltext\">{\$val2}</div></td>
@@ -127,7 +130,7 @@ function overview_install()
     $db->insert_query("templates", $templatearray);
 
     $templatearray = array(
-        "title" => "index_overview_message",
+        "title" => "overview_message",
         "template" => "<tr class=\"trow1\">
         <td colspan=\"{\$num_columns}\">
         <table  border=\"0\" cellspacing=\"0\" cellpadding=\"{\$theme[\'tablespace\']}\" width=\"100%\">
@@ -496,9 +499,13 @@ function overview_uninstall()
         "overview_3_columns_row",
         "overview_message",
         );
+
     $deltemplates = implode("','", $templatearray);
 
-    $db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title in ('{$deltemplates}');");
+    // Kill old templates too, if present.
+    $deltemplates .= "','index_" . implode("','index_", $templatearray);
+
+    $db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title IN ('{$deltemplates}');");
 
     // Remove setting groups
     $query = $db->query("SELECT gid FROM ".TABLE_PREFIX."settinggroups WHERE name='Overview'");
@@ -514,11 +521,9 @@ function overview_uninstall()
 
 function overview_is_installed()
 {
-    global $db;
+    global $templates;
 
-    $query = $db->query("SELECT gid FROM ".TABLE_PREFIX."settinggroups WHERE name='Overview'");
-
-    if($db->num_rows($query) != 0)
+    if($templates->get("overview", 0, 0))
     {
         return true;
     }
@@ -528,8 +533,11 @@ function overview_is_installed()
 
 function overview_activate()
 {
+    // Clean up to avoid double overview effect.
+    overview_deactivate();
+
     // Insert variables into templates
-    require MYBB_ROOT."inc/adminfunctions_templates.php";
+    require_once MYBB_ROOT."inc/adminfunctions_templates.php";
     find_replace_templatesets("index", '#{\$header}(\r?)\n#', "{\$header}\n{\$overview}\n");
     find_replace_templatesets("index", '#{\$footer}(\r?)\n#', "{\$footer}\n{\$overview_body}\n");
     find_replace_templatesets("index", '#<body>(\r?)\n#', "<body{\$overview_body_onload}>\n");
@@ -539,7 +547,7 @@ function overview_activate()
 function overview_deactivate()
 {
     // Remove variables from templates
-    require MYBB_ROOT."/inc/adminfunctions_templates.php";
+    require_once MYBB_ROOT."/inc/adminfunctions_templates.php";
     find_replace_templatesets("index", '#{\$overview}(\r?)\n#', "", 0);
     find_replace_templatesets("index", '#{\$overview_body}(\r?)\n#', "", 0);
     find_replace_templatesets("index", '#<body{\$overview_body_onload}>(\r?)\n#', "<body>\n", 0);
