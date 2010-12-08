@@ -679,8 +679,8 @@ function overview_end()
 }
 
 // Newest users
-function overview_do_newestusers() {
-
+function overview_do_newestusers()
+{
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
     if($mybb->settings['overview_newest_members'] == 1)
@@ -1087,7 +1087,7 @@ function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $remov
         $icon = "";
     }
 
-    return "<a href=\"{$link}\" title=\"{$subjectfull}\">{$subject}</a>";
+    return "{$icon}<a href=\"{$link}\" title=\"{$subjectfull}\">{$subject}</a>";
 }
 
 function overview_parseuser($uid, $username, $usergroup=0, $displaygroup=0)
