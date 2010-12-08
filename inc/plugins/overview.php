@@ -497,7 +497,7 @@ function overview_install()
     $overview_30 = array(
         "name" => "overview_noindex",
         "title" => "Hide overview from index page",
-        "description" => "If you don't want the overview to display on the index page, say yes. This is only useful if you make a custom overview page.",
+        "description" => "If you don\\'t want the overview to display on the index page, say yes. This is only useful if you make a custom overview page.",
         "optionscode" => "yesno",
         "value" => 0,
         "disporder" => 30,
