@@ -489,12 +489,12 @@ function overview_uninstall()
 
     // Remove templates
     $templatearray = array(
-        "index_overview",
-        "index_overview_2_columns",
-        "index_overview_2_columns_row",
-        "index_overview_3_columns",
-        "index_overview_3_columns_row",
-        "index_overview_message",
+        "overview",
+        "overview_2_columns",
+        "overview_2_columns_row",
+        "overview_3_columns",
+        "overview_3_columns_row",
+        "overview_message",
         );
     $deltemplates = implode("','", $templatearray);
 
@@ -628,11 +628,11 @@ function overview()
                 "allow_imgcode" => 1
             );
             $overview_message = $messageparser->parse_message(htmlspecialchars_uni($mybb->settings['overview_trow_message']), $parseoptions);
-            eval("\$trow_message = \"".$templates->get("index_overview_message")."\";");
+            eval("\$trow_message = \"".$templates->get("overview_message")."\";");
         }
 
         // Load template
-        eval("\$overview = \"".$templates->get("index_overview")."\";");
+        eval("\$overview = \"".$templates->get("overview")."\";");
 
         if($mybb->settings['overview_ajax_onoff'] == 1)
         {
@@ -709,10 +709,10 @@ function overview_do_newestusers()
         {
             $val1 = overview_parseuser($users['uid'], $users['username'], $users['usergroup'], $users['displaygroup']);
             $val2 = "<a href=\"search.php?action=finduser&amp;uid={$users['uid']}\">{$users['postnum']}</a>";
-            eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
+            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
         }
 
-        eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
+        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
     }
 
     return $output;
@@ -744,10 +744,10 @@ function overview_do_topposters()
         {
             $val1 = overview_parseuser($users['uid'], $users['username'], $users['usergroup'], $users['displaygroup']);
             $val2 = "<a href=\"search.php?action=finduser&amp;uid={$users['uid']}\">{$users['postnum']}</a>";
-            eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
+            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
         }
 
-        eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
+        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
     }
 
     return $output;
@@ -783,10 +783,10 @@ function overview_do_newestthreads($overview_unviewwhere)
             $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['tid']);
             $val2 = overview_parseuser($threads['uid'], $threads['username']);
             $val3 = "<a href=\"javascript:MyBB.whoPosted({$threads['tid']});\">{$threads['replies']}</a>";
-            eval("\$table_content .= \"".$templates->get("index_overview_3_columns_row")."\";");
+            eval("\$table_content .= \"".$templates->get("overview_3_columns_row")."\";");
         }
 
-        eval("\$output = \"".$templates->get("index_overview_3_columns")."\";");
+        eval("\$output = \"".$templates->get("overview_3_columns")."\";");
     }
 
     return $output;
@@ -819,10 +819,10 @@ function overview_do_mostreplies($overview_unviewwhere)
         {
             $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['tid']);
             $val2 = "<a href=\"javascript:MyBB.whoPosted({$threads['tid']});\">{$threads['replies']}</a>";
-            eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
+            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
         }
 
-        eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
+        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
     }
 
     return $output;
@@ -855,10 +855,10 @@ function overview_do_favouritethreads($overview_unviewwhere)
         {
             $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['tid']);
             $val2 = $threads['views'];
-            eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
+            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
         }
 
-        eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
+        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
     }
 
     return $output;
@@ -891,10 +891,10 @@ function overview_do_newestposts($overview_unviewwhere)
         {
             $val1 = overview_parsesubject($posts['subject'], $posts['icon'], $posts['tid'], $posts['pid'], 0, 1);
             $val2 = overview_parseuser($posts['uid'], $posts['username']);
-            eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
+            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
         }
 
-        eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
+        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
     }
 
     return $output;
@@ -954,11 +954,11 @@ function overview_do_nextevents()
                 $events['name'] = my_date($mybb->settings['dateformat'], $events['starttime']).": ".$events['name'];
                 $val1 = overview_parsesubject($events['name'], 0, 0, 0, $events['eid'], 0);
                 $val2 = overview_parseuser($events['uid'], $events['username'], $events['usergroup'], $events['displaygroup']);
-                eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
+                eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
             }
         }
 
-        eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
+        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
     }
 
     return $output;
@@ -992,10 +992,10 @@ function overview_do_newestpolls($overview_unviewwhere)
         {
             $val1 = overview_parsesubject($polls['question'], $polls['icon'], $polls['tid']);
             $val2 = overview_parseuser($polls['uid'], $polls['username']);
-            eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
+            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
         }
 
-        eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
+        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
     }
 
     return $output;
@@ -1027,10 +1027,10 @@ function overview_do_bestrepmembers()
         {
             $val1 = overview_parseuser($users['uid'], $users['username'], $users['usergroup'], $users['displaygroup']);
             $val2 = get_reputation($users['reputation'], $users['uid']);
-            eval("\$table_content .= \"".$templates->get("index_overview_2_columns_row")."\";");
+            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
         }
 
-        eval("\$output = \"".$templates->get("index_overview_2_columns")."\";");
+        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
     }
 
     return $output;
