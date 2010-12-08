@@ -685,7 +685,7 @@ function overview_do_newestusers() {
 
     if($mybb->settings['overview_newest_members'] == 1)
     {
-        $trow = overview_trowcolor($trow);
+        $trow = alt_trow();
 
         $table_heading = $lang->overview_newest_members;
         $column1_heading = $lang->overview_username;
@@ -720,7 +720,7 @@ function overview_do_topposters()
 
     if($mybb->settings['overview_top_posters'] == 1)
     {
-        $trow = overview_trowcolor($trow);
+        $trow = alt_trow();
 
         $table_heading = $lang->overview_top_posters;
         $column1_heading = $lang->overview_username;
@@ -756,7 +756,7 @@ function overview_do_newestthreads($overview_unviewwhere)
     if($mybb->settings['overview_newest_threads'] == 1)
     {
         // Hintergrund festlegen
-        $trow = overview_trowcolor($trow);
+        $trow = alt_trow();
 
         $table_heading = $lang->overview_newest_threads;
         $column1_heading = $lang->overview_topic;
@@ -794,7 +794,7 @@ function overview_do_mostreplies($overview_unviewwhere)
 
     if($mybb->settings['overview_most_replies'] == 1)
     {
-        $trow = overview_trowcolor($trow);
+        $trow = alt_trow();
 
         $table_heading = $lang->overview_most_replies;
         $column1_heading = $lang->overview_topic;
@@ -830,7 +830,7 @@ function overview_do_favouritethreads($overview_unviewwhere)
 
     if($mybb->settings['overview_favourite_threads'] == 1)
     {
-        $trow = overview_trowcolor($trow);
+        $trow = alt_trow();
 
         $table_heading = $lang->overview_favourite_threads;
         $column1_heading = $lang->overview_topic;
@@ -866,7 +866,7 @@ function overview_do_newestposts($overview_unviewwhere)
 
     if($mybb->settings['overview_newest_posts'] == 1)
     {
-        $trow = overview_trowcolor($trow);
+        $trow = alt_trow();
 
         $table_heading = $lang->overview_newest_posts;
         $column1_heading = $lang->overview_subject;
@@ -902,7 +902,7 @@ function overview_do_nextevents()
 
     if($mybb->settings['overview_next_events'] == 1)
     {
-        $trow = overview_trowcolor($trow);
+        $trow = alt_trow();
 
         $table_heading = $lang->overview_next_events;
         $column1_heading = $lang->overview_event;
@@ -966,7 +966,7 @@ function overview_do_newestpolls($overview_unviewwhere)
 
     if($mybb->settings['overview_newest_polls'] == 1)
     {
-        $trow = overview_trowcolor($trow);
+        $trow = alt_trow();
 
         $table_heading = $lang->overview_newest_polls;
         $column1_heading = $lang->overview_question;
@@ -1003,7 +1003,7 @@ function overview_do_bestrepmembers()
 
     if($mybb->settings['overview_bestrep_members'] == 1)
     {
-        $trow = overview_trowcolor($trow);
+        $trow = alt_trow();
 
         $table_heading = $lang->overview_bestrep_members;
         $column1_heading = $lang->overview_username;
@@ -1031,7 +1031,6 @@ function overview_do_bestrepmembers()
     return $output;
 }
 
-// Parse subject
 function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $removere=0)
 {
     global $mybb, $parser, $cache;
@@ -1091,7 +1090,6 @@ function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $remov
     return "<a href=\"{$link}\" title=\"{$subjectfull}\">{$subject}</a>";
 }
 
-// Parse user
 function overview_parseuser($uid, $username, $usergroup=0, $displaygroup=0)
 {
     global $mybb, $db, $lang;
@@ -1131,30 +1129,6 @@ function overview_parseuser($uid, $username, $usergroup=0, $displaygroup=0)
     {
         return $username;
     }
-}
-
-// Trow color
-function overview_trowcolor($trow)
-{
-    if(!isset($trow))
-    {
-        $trow = "trow1";
-    }
-
-    else
-    {
-        if ($trow == "trow1")
-        {
-            $trow = "trow2";
-        }
-
-        else if($trow == "trow2")
-        {
-            $trow = "trow1";
-        }
-    }
-
-    return $trow;
 }
 
 // Determine number of columns
