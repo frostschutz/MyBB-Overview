@@ -1170,11 +1170,14 @@ function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $remov
         $link = get_thread_link($tid);
     }
 
-    $icon_cache = $cache->read("posticons");
-
-    if($mybb->settings['overview_showicon'] != 0 && $icon > 0 && $icon_cache[$icon])
+    if($mybb->settings['overview_showicon'] != 0 && $icon > 0)
     {
+        $icon_cache = $cache->read("posticons");
         $icon = $icon_cache[$icon];
+    }
+
+    if(is_array($icon))
+    {
         $icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" style=\"vertical-align: middle;\" />&nbsp;";
     }
 
