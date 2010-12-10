@@ -38,6 +38,15 @@ if(!$settings['overview_noindex'])
     $plugins->add_hook("index_end", "overview_end");
 }
 
+// Dirty cache hooks (add only if cache enabled)
+if(intval($settings['overview_cache']) > 0)
+{
+    $plugins->add_hook("datahandler_post_insert_post", "overview_deletecache");
+    $plugins->add_hook("datahandler_post_insert_thread", "overview_deletecache");
+    $plugins->add_hook("datahandler_event_insert", "overview_deletecache");
+    $plugins->add_hook("datahandler_user_insert", "overview_deletecache");
+}
+
 // Custom hooks that are safe to call on custom pages.
 $plugins->add_hook("overview_start", "overview");
 $plugins->add_hook("overview_end", "overview_end");
@@ -580,14 +589,19 @@ function overview_activate()
 
 function overview_deactivate()
 {
-    global $cache, $db;
-
     // Remove variables from templates
     require_once MYBB_ROOT."/inc/adminfunctions_templates.php";
     find_replace_templatesets("index", '#{\$overview}(\r?)\n#', "", 0);
     find_replace_templatesets("index", '#{\$overview_body}(\r?)\n#', "", 0);
     find_replace_templatesets("index", '#<body{\$overview_body_onload}>(\r?)\n#', "<body>\n", 0);
     find_replace_templatesets("index", '#{\$overview_headerinclude}(\r?)\n#', "", 0);
+
+    overview_deletecache();
+}
+
+function overview_deletecache()
+{
+    global $cache, $db;
 
     // Remove cache
     if(is_object($cache->handler))
@@ -625,7 +639,7 @@ function overview()
 
             if($overcache && $overcache['time'] >= (TIME_NOW-$delta))
             {
-                $overview = $overcache['data']."<pre>cached {$overcache['time']}!</pre>";
+                $overview = $overcache['data'];
                 return $overview;
             }
         }
