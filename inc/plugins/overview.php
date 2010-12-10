@@ -505,6 +505,17 @@ function overview_install()
         );
     $db->insert_query("settings", $overview_30);
 
+    $overview_31 = array(
+        "name" => "overview_cache",
+        "title" => "Cache overview",
+        "description" => "Building the Overview requires some database queries. The Overview result can be cached to reduce server load. Specify for how long the cache should be used (in seconds). Setting to 0 disables the cache.",
+        "optionscode" => "text",
+        "value" => 300,
+        "disporder" => 31,
+        "gid" => intval($gid),
+        );
+    $db->insert_query("settings", $overview_31);
+
     // rebuild settings.php
     rebuild_settings();
 }
