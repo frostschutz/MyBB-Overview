@@ -181,349 +181,351 @@ function overview_install()
         "isdefault" => 0
         );
     $db->insert_query("settinggroups", $overview_group);
-    $gid = $db->insert_id();
+    $gid = intval($db->insert_id());
+
+    $disp = 1;
 
     // Insert settings
-    $overview_1 = array(
+    $setting = array(
         "name" => "overview_max",
         "title" => "Number of Items",
         "description" => "Enter the number of items (Users/Threads/Posts) to be shown.",
         "optionscode" => "text",
         "value" => 5,
-        "disporder" => 1,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_1);
+    $db->insert_query("settings", $setting);
 
-    $overview_2 = array(
+    $setting = array(
         "name" => "overview_newest_members",
         "title" => "Show newest members?",
         "description" => "Choose if you want the newest members to be shown.",
         "optionscode" => "yesno",
         "value" => 1,
-        "disporder" => 2,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_2);
+    $db->insert_query("settings", $setting);
 
-    $overview_3 = array(
+    $setting = array(
         "name" => "overview_do_newestusers",
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
         "value" => "1",
-        "disporder" => "3",
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_3);
+    $db->insert_query("settings", $setting);
 
-    $overview_4 = array(
+    $setting = array(
         "name" => "overview_top_posters",
         "title" => "Show Top Posters?",
         "description" => "Choose if you want the top posters to be shown.",
         "optionscode" => "yesno",
         "value" => 0,
-        "disporder" => 4,
+        "disporder" => $disp++,
         "gid" => intval($gid)
         );
-    $db->insert_query("settings", $overview_4);
+    $db->insert_query("settings", $setting);
 
-    $overview_5 = array(
+    $setting = array(
         "name" => "overview_do_topposters",
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
         "value" => 2,
-        "disporder" => 5,
+        "disporder" => $disp++,
         "gid" => intval($gid)
         );
-    $db->insert_query("settings", $overview_5);
+    $db->insert_query("settings", $setting);
 
-    $overview_6 = array(
+    $setting = array(
         "name" => "overview_newest_threads",
         "title" => "Show newest threads?",
         "description" => "Choose if you want the newest threads to be shown.",
         "optionscode" => "yesno",
         "value" => 1,
-        "disporder" => 6,
+        "disporder" => $disp++,
         "gid" => intval($gid)
         );
-    $db->insert_query("settings", $overview_6);
+    $db->insert_query("settings", $setting);
 
-    $overview_7 = array(
+    $setting = array(
         "name" => "overview_do_newestthreads",
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
         "value" => 3,
-        "disporder" => 7,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_7);
+    $db->insert_query("settings", $setting);
 
-    $overview_8 = array(
+    $setting = array(
         "name" => "overview_most_replies",
         "title" => "Show threads with most replies?",
         "description" => "Choose if you want the threads with the most replies to be shown.",
         "optionscode" => "yesno",
         "value" => 0,
-        "disporder" => 8,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_8);
+    $db->insert_query("settings", $setting);
 
-    $overview_9 = array(
+    $setting = array(
         "name" => "overview_do_mostreplies",
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
         "value" => 4,
-        "disporder" => 9,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_9);
+    $db->insert_query("settings", $setting);
 
-    $overview_10 = array(
+    $setting = array(
         "name" => "overview_favourite_threads",
         "title" => "Show favourite Threads?",
         "description" => "Choose if you want the favourite threads to be shown.",
         "optionscode" => "yesno",
         "value" => 0,
-        "disporder" => 10,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_10);
+    $db->insert_query("settings", $setting);
 
-    $overview_11 = array(
+    $setting = array(
         "name" => "overview_do_favouritethreads",
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
         "value" => 5,
-        "disporder" => 11,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_11);
+    $db->insert_query("settings", $setting);
 
-    $overview_12 = array(
+    $setting = array(
         "name" => "overview_newest_posts",
         "title" => "Show newest posts?",
         "description" => "Choose if you want the newest posts to be shown.",
         "optionscode" => "yesno",
         "value" => 1,
-        "disporder" => 12,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_12);
+    $db->insert_query("settings", $setting);
 
-    $overview_13 = array(
+    $setting = array(
         "name" => "overview_do_newestposts",
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
         "value" => 6,
-        "disporder" => 13,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_13);
+    $db->insert_query("settings", $setting);
 
-    $overview_14 = array(
+    $setting = array(
         "name" => "overview_bestrep_members",
         "title" => "Show best reputated members?",
         "description" => "Choose if you want the best reputated members to be shown.",
         "optionscode" => "yesno",
         "value" => 0,
-        "disporder" => 14,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_14);
+    $db->insert_query("settings", $setting);
 
-    $overview_15 = array(
+    $setting = array(
         "name" => "overview_do_bestrepmembers",
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
         "value" => 7,
-        "disporder" => 15,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_15);
+    $db->insert_query("settings", $setting);
 
-    $overview_16 = array(
+    $setting = array(
         "name" => "overview_newest_polls",
         "title" => "Show best newest polls?",
         "description" => "Choose if you want the newest polls to be shown.",
         "optionscode" => "yesno",
         "value" => 0,
-        "disporder" => 16,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_16);
+    $db->insert_query("settings", $setting);
 
-    $overview_17 = array(
+    $setting = array(
         "name" => "overview_do_newestpolls",
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
         "value" => 8,
-        "disporder" => 17,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_17);
+    $db->insert_query("settings", $setting);
 
-    $overview_18 = array(
+    $setting = array(
         "name" => "overview_next_events",
         "title" => "Show best next events?",
         "description" => "Choose if you want the next events to be shown.",
         "optionscode" => "yesno",
         "value" => 0,
-        "disporder" => 18,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_18);
+    $db->insert_query("settings", $setting);
 
-    $overview_19 = array(
+    $setting = array(
         "name" => "overview_do_nextevents",
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
         "value" => 9,
-        "disporder" => 19,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_19);
+    $db->insert_query("settings", $setting);
 
-    $overview_20 = array(
+    $setting = array(
         "name" => "overview_show_re",
         "title" => "Do you want to show the \"RE:\" from the subjects of replies?",
         "description" => "Choose if you want the \"RE:\" to be shown in front of the subjects of replies.",
         "optionscode" => "yesno",
         "value" => 1,
-        "disporder" => 20,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_20);
+    $db->insert_query("settings", $setting);
 
-    $overview_21 = array(
+    $setting = array(
         "name" => "overview_subjects_length",
         "title" => "Number of Characters",
         "description" => "How many characters of subjects should be shown (0 = show all)?",
         "optionscode" => "text",
         "value" => 0,
-        "disporder" => 21,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_21);
+    $db->insert_query("settings", $setting);
 
-    $overview_22 = array(
+    $setting = array(
         "name" => "overview_usernamestyle",
         "title" => "Format usernames?",
         "description" => "Do you want to format the usernames in the style of their usergroups?",
         "optionscode" => "yesno",
         "value" => 0,
-        "disporder" => 22,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_22);
+    $db->insert_query("settings", $setting);
 
-    $overview_23 = array(
+    $setting = array(
         "name" => "overview_showicon",
         "title" => "Show post icons?",
         "description" => "Do you want to display post icons in front of subjects?",
         "optionscode" => "yesno",
         "value" => 0,
-        "disporder" => 23,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_23);
+    $db->insert_query("settings", $setting);
 
-    $overview_24 = array(
+    $setting = array(
         "name" => "overview_trow_message_onoff",
         "title" => "Show message?",
         "description" => "Choose if you want to show a message.",
         "optionscode" => "yesno",
         "value" => 0,
-        "disporder" => 24,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_24);
+    $db->insert_query("settings", $setting);
 
-    $overview_25 = array(
+    $setting = array(
         "name" => "overview_trow_message",
         "title" => "Message",
         "description" => "Enter the message. You can use MyCode.",
         "optionscode" => "textarea",
         "value" => "Enter your message here!",
-        "disporder" => 25,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_25);
+    $db->insert_query("settings", $setting);
 
-    $overview_26 = array(
+    $setting = array(
         "name" => "overview_ajax_onoff",
         "title" => "Ajax",
         "description" => "Do you want to enable the Ajax functionality so that the overview box reloads itself?",
         "optionscode" => "yesno",
         "value" => 0,
-        "disporder" => 26,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_26);
+    $db->insert_query("settings", $setting);
 
-    $overview_27 = array(
+    $setting = array(
         "name" => "overview_ajax_time",
         "title" => "Period",
         "description" => "Enter the period of time after that the overview box should reload itself (Seconds)?",
         "optionscode" => "text",
         "value" => 60,
-        "disporder" => 27,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_27);
+    $db->insert_query("settings", $setting);
 
-    $overview_28 = array(
+    $setting = array(
         "name" => "overview_ajax_loading",
         "title" => "Loading",
         "description" => "Do you want to show a \"Loading\"-Window?",
         "optionscode" => "yesno",
         "value" => 1,
-        "disporder" => 28,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_28);
+    $db->insert_query("settings", $setting);
 
-    $overview_29 = array(
+    $setting = array(
         "name" => "overview_usergroups",
         "title" => "Disable overview for usergroups",
         "description" => "Enter the IDs of the usergroups that should not see the overview table (0 = none). Seperate several IDs with commas.",
         "optionscode" => "text",
         "value" => 0,
-        "disporder" => 29,
-        "gid" => intval($gid)
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_29);
+    $db->insert_query("settings", $setting);
 
-    $overview_30 = array(
+    $setting = array(
         "name" => "overview_noindex",
         "title" => "Hide overview from index page",
         "description" => "If you don\\'t want the overview to display on the index page, say yes. This is only useful if you make a custom overview page.",
         "optionscode" => "yesno",
         "value" => 0,
-        "disporder" => 30,
-        "gid" => intval($gid),
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_30);
+    $db->insert_query("settings", $setting);
 
-    $overview_31 = array(
+    $setting = array(
         "name" => "overview_cache",
         "title" => "Cache overview",
         "description" => "Building the Overview requires some database queries. The Overview result can be cached to reduce server load. Specify for how long the cache should be used (in seconds). Setting to 0 disables the cache.",
         "optionscode" => "text",
         "value" => 300,
-        "disporder" => 31,
-        "gid" => intval($gid),
+        "disporder" => $disp++,
+        "gid" => $gid,
         );
-    $db->insert_query("settings", $overview_31);
+    $db->insert_query("settings", $setting);
 
     // rebuild settings.php
     rebuild_settings();
