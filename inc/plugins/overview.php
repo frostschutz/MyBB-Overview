@@ -592,11 +592,14 @@ function overview_deactivate()
     // Remove cache
     if(is_object($cache->handler))
     {
-        $cache->handler->delete('overview');
+        $query = $db->simple_select("datacache", "title", "title LIKE 'overview%'");
+        while($row = $db->fetch_array($query))
+        {
+            $cache->handler->delete($row['title']);
+        }
     }
 
-    // There is always a copy in the database...
-    $db->delete_query("datacache", "title='overview'");
+    $db->delete_query("datacache", "title LIKE 'overview%'");
 }
 
 /* --- Functions: --- */
@@ -614,10 +617,11 @@ function overview()
     {
         // Fetch from cache, if present.
         $delta = intval($mybb->settings['overview_cache']);
+        $extra = "{$mybb->user['usergroup']}{$mybb->user['additionalgroups']}";
 
         if($delta > 0)
         {
-            $overcache = $cache->read('overview');
+            $overcache = $cache->read("overview{$extra}");
 
             if($overcache && $overcache['time'] >= (TIME_NOW-$delta))
             {
@@ -706,7 +710,8 @@ function overview()
         // Populate cache
         if($delta > 0)
         {
-            $cache->update('overview', array('time' => TIME_NOW, 'data' => $overview));
+            $cache->update("overview{$extra}",
+                           array('time' => TIME_NOW, 'data' => $overview));
         }
 
         return $overview;
