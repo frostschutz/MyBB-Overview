@@ -21,6 +21,7 @@
 
 $l['overview_author'] = "Author";
 $l['overview_bestrep_members'] = "Best reputated mebers";
+$l['overview_edited_posts'] = "Recently edited posts";
 $l['overview_event'] = "Event";
 $l['overview_favourite_threads'] = "Favourite threads";
 $l['overview_most_replies'] = "Threads with most replies";

@@ -342,6 +342,28 @@ function overview_install()
     $db->insert_query("settings", $setting);
 
     $setting = array(
+        "name" => "overview_editedposts",
+        "title" => "Show recently edited posts?",
+        "description" => "Choose if you want the recently edited posts to be shown.",
+        "optionscode" => "yesno",
+        "value" => 0,
+        "disporder" => $disp++,
+        "gid" => $gid,
+        );
+    $db->insert_query("settings", $setting);
+
+    $setting = array(
+        "name" => "overview_do_editedposts",
+        "title" => "Sorting",
+        "description" => "Here you can change the order.",
+        "optionscode" => "text",
+        "value" => 6,
+        "disporder" => $disp++,
+        "gid" => $gid,
+        );
+    $db->insert_query("settings", $setting);
+
+    $setting = array(
         "name" => "overview_bestrep_members",
         "title" => "Show best reputated members?",
         "description" => "Choose if you want the best reputated members to be shown.",
@@ -701,7 +723,7 @@ function overview()
         // Determine sort order
         $orderquery = $db->query("
             SELECT name from ".TABLE_PREFIX."settings
-            WHERE name IN ('overview_do_newestusers','overview_do_topposters','overview_do_newestthreads','overview_do_mostreplies','overview_do_favouritethreads','overview_do_newestposts','overview_do_bestrepmembers','overview_do_newestpolls','overview_do_nextevents')
+            WHERE name IN ('overview_do_newestusers','overview_do_topposters','overview_do_newestthreads','overview_do_mostreplies','overview_do_favouritethreads','overview_do_newestposts','overview_do_editedposts','overview_do_bestrepmembers','overview_do_newestpolls','overview_do_nextevents')
             ORDER BY value ASC
         ;");
 
@@ -1005,6 +1027,42 @@ function overview_do_newestposts($overview_unviewwhere)
             FROM ".TABLE_PREFIX."posts
             WHERE visible='1' {$overview_unviewwhere}
             ORDER BY dateline DESC
+            LIMIT 0,{$mybb->settings['overview_max']}
+        ;");
+
+        // Print data
+        while($posts = $db->fetch_array($query))
+        {
+            $val1 = overview_parsesubject($posts['subject'], $posts['icon'], 0, $posts['tid'], $posts['pid'], 0, 1);
+            $val2 = overview_parseuser($posts['uid'], $posts['username']);
+            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
+        }
+
+        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
+    }
+
+    return $output;
+}
+
+// Edited posts
+function overview_do_editedposts($overview_unviewwhere)
+{
+    global $mybb, $db, $templates, $theme, $lang, $trow;
+
+    if($mybb->settings['overview_edited_posts'] == 1)
+    {
+        $trow = alt_trow();
+
+        $table_heading = $lang->overview_edited_posts;
+        $column1_heading = $lang->overview_subject;
+        $column2_heading = $lang->overview_author;
+
+        // Fetch data
+        $query = $db->query("
+            SELECT subject, username, uid, pid, tid, icon
+            FROM ".TABLE_PREFIX."posts
+            WHERE edittime != 0 AND visible='1' {$overview_unviewwhere}
+            ORDER BY edittime DESC
             LIMIT 0,{$mybb->settings['overview_max']}
         ;");
 
