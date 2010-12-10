@@ -41,11 +41,22 @@ if(!$settings['overview_noindex'])
 // Dirty cache hooks (add only if cache enabled)
 if(intval($settings['overview_cache']) > 0)
 {
+    // This is the ugly side of caching.
+    // Because of the cache, the Overview won't be up-to-date for some time.
+    // So we forcibly kill the cache in the most common cases (new thread etc).
     $plugins->add_hook("datahandler_post_insert_post", "overview_deletecache");
     $plugins->add_hook("datahandler_post_insert_thread", "overview_deletecache");
     $plugins->add_hook("datahandler_event_insert", "overview_deletecache");
     $plugins->add_hook("datahandler_user_insert", "overview_deletecache");
+
+    // Cover deleted threads as well.
+    $plugins->add_hook("class_moderation_delete_post", "overview_deletecache");
+    $plugins->add_hook("class_moderation_delete_thread", "overview_deletecache");
     $plugins->add_hook("admin_config_settings_change", "overview_deletecache");
+    $plugins->add_hook("admin_user_users_delete", "overview_deletecache");
+
+    // Could do more, but let's not overdo things.
+    // Worst case, the overview will show an old link.
 }
 
 // Custom hooks that are safe to call on custom pages.
@@ -616,6 +627,13 @@ function overview_deactivate()
 function overview_deletecache()
 {
     global $cache, $db;
+    global $overview_deleted;
+
+    // Let's not overdo it.
+    if($overview_deleted)
+        return;
+
+    $overview_deleted = 1;
 
     // Remove cache
     if(is_object($cache->handler))
@@ -645,7 +663,8 @@ function overview()
     {
         // Fetch from cache, if present.
         $delta = intval($mybb->settings['overview_cache']);
-        $extra = "{$mybb->user['usergroup']}{$mybb->user['additionalgroups']}";
+        // Cache must be unique to usergroup, additional groups, language
+        $extra = md5("{$mybb->user['usergroup']}{$mybb->user['additionalgroups']}{$lang->language}");
 
         if($delta > 0)
         {
@@ -659,8 +678,6 @@ function overview()
         }
 
         // No luck with the cache, build the overview:
-
-        $language = $mybb->settings['bblanguage'];
 
         // Load language files
         $lang->load("overview");
