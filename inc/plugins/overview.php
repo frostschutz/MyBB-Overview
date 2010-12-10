@@ -874,7 +874,7 @@ function overview_do_newestthreads($overview_unviewwhere)
 
         // Fetch data
         $query = $db->query("
-            SELECT subject, username, uid, tid, replies, icon
+            SELECT subject, username, uid, tid, replies, icon, prefix
             FROM ".TABLE_PREFIX."threads
             WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
             ORDER BY dateline DESC
@@ -884,7 +884,7 @@ function overview_do_newestthreads($overview_unviewwhere)
         // Print data
         while ($threads = $db->fetch_array($query))
         {
-            $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['tid']);
+            $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['prefix'], $threads['tid']);
             $val2 = overview_parseuser($threads['uid'], $threads['username']);
             $val3 = "<a href=\"javascript:MyBB.whoPosted({$threads['tid']});\">{$threads['replies']}</a>";
             eval("\$table_content .= \"".$templates->get("overview_3_columns_row")."\";");
@@ -911,7 +911,7 @@ function overview_do_mostreplies($overview_unviewwhere)
 
         // Fetch data
         $query = $db->query("
-            SELECT subject, tid, replies, icon
+            SELECT subject, tid, replies, icon, prefix
             FROM ".TABLE_PREFIX."threads
             WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
             ORDER BY replies DESC
@@ -921,7 +921,7 @@ function overview_do_mostreplies($overview_unviewwhere)
         // Print data
         while($threads = $db->fetch_array($query))
         {
-            $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['tid']);
+            $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['prefix'], $threads['tid']);
             $val2 = "<a href=\"javascript:MyBB.whoPosted({$threads['tid']});\">{$threads['replies']}</a>";
             eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
         }
@@ -947,7 +947,7 @@ function overview_do_favouritethreads($overview_unviewwhere)
 
         // Fetch data
         $query = $db->query("
-            SELECT subject, tid, views, icon
+            SELECT subject, tid, views, icon, prefix
             FROM ".TABLE_PREFIX."threads
             WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
             ORDER BY views DESC
@@ -957,7 +957,7 @@ function overview_do_favouritethreads($overview_unviewwhere)
         // Print data
         while ($threads = $db->fetch_array($query))
         {
-            $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['tid']);
+            $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['prefix'], $threads['tid']);
             $val2 = $threads['views'];
             eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
         }
@@ -993,7 +993,7 @@ function overview_do_newestposts($overview_unviewwhere)
         // Print data
         while($posts = $db->fetch_array($query))
         {
-            $val1 = overview_parsesubject($posts['subject'], $posts['icon'], $posts['tid'], $posts['pid'], 0, 1);
+            $val1 = overview_parsesubject($posts['subject'], $posts['icon'], 0, $posts['tid'], $posts['pid'], 0, 1);
             $val2 = overview_parseuser($posts['uid'], $posts['username']);
             eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
         }
@@ -1056,7 +1056,7 @@ function overview_do_nextevents()
             while($events = $db->fetch_array($query))
             {
                 $events['name'] = my_date($mybb->settings['dateformat'], $events['starttime']).": ".$events['name'];
-                $val1 = overview_parsesubject($events['name'], 0, 0, 0, $events['eid'], 0);
+                $val1 = overview_parsesubject($events['name'], 0, 0, 0, 0, $events['eid'], 0);
                 $val2 = overview_parseuser($events['uid'], $events['username'], $events['usergroup'], $events['displaygroup']);
                 eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
             }
@@ -1083,7 +1083,7 @@ function overview_do_newestpolls($overview_unviewwhere)
 
         // Fetch data
         $query = $db->query("
-            SELECT p.question, p.tid, t.uid, t.username, t.icon
+            SELECT p.question, p.tid, t.uid, t.username, t.icon, t.prefix
             FROM ".TABLE_PREFIX."polls p
             LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
             WHERE t.visible='1' {$overview_unviewwhere} AND t.closed NOT LIKE 'moved|%'
@@ -1094,7 +1094,7 @@ function overview_do_newestpolls($overview_unviewwhere)
         // Print data
         while($polls = $db->fetch_array($query))
         {
-            $val1 = overview_parsesubject($polls['question'], $polls['icon'], $polls['tid']);
+            $val1 = overview_parsesubject($polls['question'], $polls['icon'], $polls['prefix'], $polls['tid']);
             $val2 = overview_parseuser($polls['uid'], $polls['username']);
             eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
         }
@@ -1140,9 +1140,9 @@ function overview_do_bestrepmembers()
     return $output;
 }
 
-function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $removere=0)
+function overview_parsesubject($subject, $icon=0, $prefix=0, $tid=0, $pid=0, $eid=0, $removere=0)
 {
-    global $mybb, $parser, $cache;
+    global $mybb, $parser, $cache, $db;
 
     if($mybb->settings['overview_show_re'] == 0 && $removere == 1)
     {
@@ -1183,6 +1183,7 @@ function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $remov
         $link = get_thread_link($tid);
     }
 
+    // Icon
     if($mybb->settings['overview_showicon'] != 0 && $icon > 0)
     {
         $icon_cache = $cache->read("posticons");
@@ -1199,7 +1200,37 @@ function overview_parsesubject($subject, $icon=0, $tid=0, $pid=0, $eid=0, $remov
         $icon = "";
     }
 
-    return "{$icon}<a href=\"{$link}\" title=\"{$subjectfull}\">{$subject}</a>";
+    // Prefix
+    if($mybb->settings['overview_showprefix'] && $prefix > 0)
+    {
+        // MyBB does not have a prefix cache - boo hoo.
+        global $overview_prefixcache;
+
+        if(!isset($overview_prefixcache[$prefix]))
+        {
+            $query = $db->simple_select('threadprefixes', 'displaystyle', "pid='$prefix'");
+            $row = $db->fetch_array($query);
+
+            if($row)
+            {
+                $overview_prefixcache[$prefix] = $row['displaystyle'].'&nbsp';
+            }
+
+            else
+            {
+                $overview_prefixcache[$prefix] = '';
+            }
+        }
+
+        $prefix = $overview_prefixcache[$prefix];
+    }
+
+    else
+    {
+        $prefix = '';
+    }
+
+    return "{$icon}{$prefix}<a href=\"{$link}\" title=\"{$subjectfull}\">{$subject}</a>";
 }
 
 function overview_parseuser($uid, $username, $usergroup=0, $displaygroup=0)
