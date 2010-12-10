@@ -49,6 +49,9 @@ if(intval($settings['overview_cache']) > 0)
     $plugins->add_hook("datahandler_event_insert", "overview_deletecache");
     $plugins->add_hook("datahandler_user_insert", "overview_deletecache");
 
+    // ...and edits
+    $plugins->add_hook("datahandler_post_update", "overview_deletecache");
+
     // Cover deleted threads as well.
     $plugins->add_hook("class_moderation_delete_post", "overview_deletecache");
     $plugins->add_hook("class_moderation_delete_thread", "overview_deletecache");
@@ -343,7 +346,7 @@ function overview_install()
     $db->insert_query("settings", $setting);
 
     $setting = array(
-        "name" => "overview_editedposts",
+        "name" => "overview_edited_posts",
         "title" => "Show recently edited posts?",
         "description" => "Choose if you want the recently edited posts to be shown.",
         "optionscode" => "yesno",
@@ -1375,6 +1378,7 @@ function overview_num_columns()
         'overview_most_replies',
         'overview_favourite_threads',
         'overview_newest_posts',
+        'overview_edited_posts',
         'overview_bestrep_members',
         'overview_newest_polls',
         'overview_next_events'
