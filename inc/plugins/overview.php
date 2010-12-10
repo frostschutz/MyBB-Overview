@@ -595,10 +595,8 @@ function overview_deactivate()
         $cache->handler->delete('overview');
     }
 
-    else
-    {
-        $db->delete_query("datacache", "title='overview'");
-    }
+    // There is always a copy in the database...
+    $db->delete_query("datacache", "title='overview'");
 }
 
 /* --- Functions: --- */
@@ -614,6 +612,22 @@ function overview()
 
     if($mybb->settings['overview_usergroups'] == 0 || !in_array($mybb->user['usergroup'], $overviewgroups))
     {
+        // Fetch from cache, if present.
+        $delta = intval($mybb->settings['overview_cache']);
+
+        if($delta > 0)
+        {
+            $overcache = $cache->read('overview');
+
+            if($overcache && $overcache['time'] >= (TIME_NOW-$delta))
+            {
+                $overview = $overcache['data']."<pre>cached {$overcache['time']}!</pre>";
+                return $overview;
+            }
+        }
+
+        // No luck with the cache, build the overview:
+
         $language = $mybb->settings['bblanguage'];
 
         // Load language files
@@ -689,10 +703,13 @@ function overview()
         // Load template
         eval("\$overview = \"".$templates->get("overview")."\";");
 
-        if($mybb->settings['overview_ajax_onoff'] == 1)
+        // Populate cache
+        if($delta > 0)
         {
-            return $overview;
+            $cache->update('overview', array('time' => TIME_NOW, 'data' => $overview));
         }
+
+        return $overview;
     }
 }
 
