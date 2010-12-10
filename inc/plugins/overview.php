@@ -70,7 +70,7 @@ function overview_info()
     return array(
         "name"          => "Overview",
         "title"         => "Overview",
-        "description"   => "Displays a box on the index page that shows different infomations about your board.<br />"
+        "description"   => "Displays a box on the index page that shows latest threads, posts, users, and more.<br />"
                            ."<i>Maintained by <a href=\"mailto:Andreas.Klauer@metamorpher.de\">Andreas Klauer</a></i>",
         "website"       => "http://www.mybboard.de",
         "author"        => "Michael Schlechtinger",
