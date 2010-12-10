@@ -440,6 +440,17 @@ function overview_install()
     $db->insert_query("settings", $setting);
 
     $setting = array(
+        "name" => "overview_showprefix",
+        "title" => "Show thread prefix?",
+        "description" => "Do you want to display thread prefix in front of subjects?",
+        "optionscode" => "yesno",
+        "value" => 0,
+        "disporder" => $disp++,
+        "gid" => $gid,
+        );
+    $db->insert_query("settings", $setting);
+
+    $setting = array(
         "name" => "overview_trow_message_onoff",
         "title" => "Show message?",
         "description" => "Choose if you want to show a message.",
