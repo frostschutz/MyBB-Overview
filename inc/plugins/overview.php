@@ -580,12 +580,25 @@ function overview_activate()
 
 function overview_deactivate()
 {
+    global $cache, $db;
+
     // Remove variables from templates
     require_once MYBB_ROOT."/inc/adminfunctions_templates.php";
     find_replace_templatesets("index", '#{\$overview}(\r?)\n#', "", 0);
     find_replace_templatesets("index", '#{\$overview_body}(\r?)\n#', "", 0);
     find_replace_templatesets("index", '#<body{\$overview_body_onload}>(\r?)\n#', "<body>\n", 0);
     find_replace_templatesets("index", '#{\$overview_headerinclude}(\r?)\n#', "", 0);
+
+    // Remove cache
+    if(is_object($cache->handler))
+    {
+        $cache->handler->delete('overview');
+    }
+
+    else
+    {
+        $db->delete_query("datacache", "title='overview'");
+    }
 }
 
 /* --- Functions: --- */
