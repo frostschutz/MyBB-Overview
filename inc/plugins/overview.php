@@ -445,7 +445,7 @@ function overview_install()
         "title" => "Show post icons?",
         "description" => "Do you want to display post icons in front of subjects?",
         "optionscode" => "yesno",
-        "value" => 0,
+        "value" => 1,
         "disporder" => $disp++,
         "gid" => $gid,
         );
