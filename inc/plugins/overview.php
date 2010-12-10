@@ -1084,7 +1084,7 @@ function overview_do_newestpolls($overview_unviewwhere)
 
         // Fetch data
         $query = $db->query("
-            SELECT p.question, p.tid, t.uid, t.username, t.icon, t.prefix
+            SELECT p.question, p.tid, t.uid, t.username
             FROM ".TABLE_PREFIX."polls p
             LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
             WHERE t.visible='1' {$overview_unviewwhere} AND t.closed NOT LIKE 'moved|%'
@@ -1095,7 +1095,7 @@ function overview_do_newestpolls($overview_unviewwhere)
         // Print data
         while($polls = $db->fetch_array($query))
         {
-            $val1 = overview_parsesubject($polls['question'], $polls['icon'], $polls['prefix'], $polls['tid']);
+            $val1 = overview_parsesubject($polls['question'], 0, 0, $polls['tid']);
             $val2 = overview_parseuser($polls['uid'], $polls['username']);
             eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
         }
