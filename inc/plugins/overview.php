@@ -45,6 +45,7 @@ if(intval($settings['overview_cache']) > 0)
     $plugins->add_hook("datahandler_post_insert_thread", "overview_deletecache");
     $plugins->add_hook("datahandler_event_insert", "overview_deletecache");
     $plugins->add_hook("datahandler_user_insert", "overview_deletecache");
+    $plugins->add_hook("admin_config_settings_change", "overview_deletecache");
 }
 
 // Custom hooks that are safe to call on custom pages.
