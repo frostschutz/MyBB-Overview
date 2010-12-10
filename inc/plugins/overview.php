@@ -52,7 +52,7 @@ if(intval($settings['overview_cache']) > 0)
     // Cover deleted threads as well.
     $plugins->add_hook("class_moderation_delete_post", "overview_deletecache");
     $plugins->add_hook("class_moderation_delete_thread", "overview_deletecache");
-    $plugins->add_hook("admin_config_settings_change", "overview_deletecache");
+    $plugins->add_hook("admin_config_settings_change_commit", "overview_deletecache");
     $plugins->add_hook("admin_user_users_delete", "overview_deletecache");
 
     // Could do more, but let's not overdo things.
