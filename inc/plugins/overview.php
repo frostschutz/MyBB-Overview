@@ -196,6 +196,7 @@ function overview_install()
     $gid = intval($db->insert_id());
 
     $disp = 1;
+    $spalte = 1;
 
     // Insert settings
     $setting = array(
@@ -225,7 +226,7 @@ function overview_install()
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
-        "value" => "1",
+        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -247,7 +248,7 @@ function overview_install()
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
-        "value" => 2,
+        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => intval($gid)
         );
@@ -269,7 +270,7 @@ function overview_install()
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
-        "value" => 3,
+        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -291,7 +292,7 @@ function overview_install()
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
-        "value" => 4,
+        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -313,7 +314,7 @@ function overview_install()
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
-        "value" => 5,
+        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -335,7 +336,7 @@ function overview_install()
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
-        "value" => 6,
+        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -357,7 +358,7 @@ function overview_install()
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
-        "value" => 6,
+        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -379,7 +380,7 @@ function overview_install()
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
-        "value" => 7,
+        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -401,7 +402,7 @@ function overview_install()
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
-        "value" => 8,
+        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -423,7 +424,7 @@ function overview_install()
         "title" => "Sorting",
         "description" => "Here you can change the order.",
         "optionscode" => "text",
-        "value" => 9,
+        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
