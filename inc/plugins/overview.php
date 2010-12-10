@@ -1043,12 +1043,23 @@ function overview_do_nextevents()
             // TODO: Instead of substracting 24 hours, align to the users timezone boundary.
             $today = TIME_NOW - 60*60*24;
 
+            // Decide whether we can include private events or not.
+            if(intval($mybb->settings['overview_cache']) > 0)
+            {
+                $private = "e.private='0'";
+            }
+
+            else
+            {
+                $private = "(e.private='0' OR e.uid='".intval($mybb->user['uid'])."')";
+            }
+
             // Fetch data
             $query = $db->query("
                 SELECT e.eid, e.name, e.starttime, e.uid, u.username, u.usergroup, u.displaygroup
                 FROM ".TABLE_PREFIX."events e
                 LEFT JOIN ".TABLE_PREFIX."users u ON (e.uid=u.uid)
-                WHERE e.visible = '1' AND (e.private = '0' OR e.uid = '".intval($mybb->user['uid'])."') AND (e.starttime > '{$today}' OR e.endtime > '{$today}') {$cids}
+                WHERE e.visible = '1' AND {$private} AND (e.starttime > '{$today}' OR e.endtime > '{$today}') {$cids}
                 ORDER BY starttime ASC
                 LIMIT 0,{$mybb->settings['overview_max']}
             ;");
