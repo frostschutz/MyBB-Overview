@@ -563,6 +563,7 @@ function overview_deletecache()
 
 /* --- Functions: --- */
 
+// Build the main overview function
 function overview()
 {
     global $db, $mybb, $cache, $templates, $theme, $lang, $overview, $collapsed;
@@ -645,11 +646,11 @@ function overview()
 
         foreach(array('overview_newest_members','overview_top_posters','overview_newest_threads','overview_most_replies','overview_favourite_threads','overview_newest_posts','overview_edited_posts','overview_bestrep_members','overview_newest_polls','overview_next_events') as $key)
         {
-            $val = intval($mybb->settings[$val]);
+            $val = $mybb->settings[$key];
 
             if($val)
             {
-                $order[$key] = $mybb->settings[$val];
+                $order[$key] = $val;
             }
         }
 
@@ -734,6 +735,8 @@ function overview_end()
         $overview_body = "<script type=\"text/javascript\">\nsetInterval('overview_request(".$loaddisplay.")', ".$intervall.");\n</script>";
     }
 }
+
+/* --- Columns: --- */
 
 // Newest members
 function overview_newest_members()
