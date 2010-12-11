@@ -566,17 +566,17 @@ function overview_deletecache()
 // Build the main overview function
 function overview()
 {
-    global $db, $mybb, $cache, $templates, $theme, $lang, $overview, $collapsed;
+    global $db, $mybb, $settings, $cache, $templates, $theme, $lang, $overview, $collapsed;
 
-    if($mybb->settings['overview_usergroups'] != 0)
+    if($settings['overview_usergroups'] != 0)
     {
-        $overviewgroups = explode(",", $mybb->settings['overview_usergroups']);
+        $overviewgroups = explode(",", $settings['overview_usergroups']);
     }
 
-    if($mybb->settings['overview_usergroups'] == 0 || !in_array($mybb->user['usergroup'], $overviewgroups))
+    if($settings['overview_usergroups'] == 0 || !in_array($mybb->user['usergroup'], $overviewgroups))
     {
         // Fetch from cache, if present.
-        $delta = intval($mybb->settings['overview_cache']);
+        $delta = intval($settings['overview_cache']);
 
         if($delta > 0)
         {
@@ -620,7 +620,7 @@ function overview()
         $collapseinsert1 = $collapseinsert2 = "";
 
         // Output data
-        if($mybb->settings['overview_ajax'] && !($delta > 0))
+        if($settings['overview_ajax'] && !($delta > 0))
         {
             $expdisplay = "";
 
@@ -646,7 +646,7 @@ function overview()
 
         foreach(array('overview_newest_members','overview_top_posters','overview_newest_threads','overview_most_replies','overview_favourite_threads','overview_newest_posts','overview_edited_posts','overview_bestrep_members','overview_newest_polls','overview_next_events') as $key)
         {
-            $val = $mybb->settings[$key];
+            $val = $settings[$key];
 
             if($val)
             {
@@ -666,7 +666,7 @@ function overview()
         }
 
         // Show message?
-        if($mybb->settings['overview_trow_message_onoff'] == "1")
+        if($settings['overview_trow_message_onoff'] == "1")
         {
             require_once  MYBB_ROOT."inc/class_parser.php";
             $messageparser = new postParser;
@@ -676,7 +676,7 @@ function overview()
                 "allow_smilies" => 1,
                 "allow_imgcode" => 1
             );
-            $overview_message = $messageparser->parse_message(htmlspecialchars_uni($mybb->settings['overview_trow_message']), $parseoptions);
+            $overview_message = $messageparser->parse_message(htmlspecialchars_uni($settings['overview_trow_message']), $parseoptions);
             eval("\$trow_message = \"".$templates->get("overview_message")."\";");
         }
 
@@ -696,9 +696,9 @@ function overview()
 
 function overview_ajax()
 {
-    global $mybb;
+    global $mybb, $settings;
 
-    if($mybb->input['action'] == "overview" && $mybb->settings['overview_ajax'])
+    if($mybb->input['action'] == "overview" && $settings['overview_ajax'])
     {
         echo overview();
     }
@@ -706,18 +706,19 @@ function overview_ajax()
 
 function overview_end()
 {
-    global $mybb, $intervall, $overview_headerinclude, $overview_body_onload, $overview_body_onload2, $overview, $overview_body;
+    global $mybb, $settings;
+    global $intervall, $overview_headerinclude, $overview_body_onload, $overview_body_onload2, $overview, $overview_body;
 
     $overview_headerinclude = $overview_body_onload = $overview_body_onload2 = $overview_body = "";
 
-    if($mybb->settings['overview_usergroups'] != 0)
+    if($settings['overview_usergroups'] != 0)
     {
-        $overviewgroups = explode(",", $mybb->settings['overview_usergroups']);
+        $overviewgroups = explode(",", $settings['overview_usergroups']);
     }
 
-    if($mybb->settings['overview_ajax'] && ($mybb->settings['overview_usergroups'] == 0 || !in_array($mybb->user['usergroup'], $overviewgroups)))
+    if($settings['overview_ajax'] && ($settings['overview_usergroups'] == 0 || !in_array($mybb->user['usergroup'], $overviewgroups)))
     {
-        if($mybb->settings['overview_ajax_loading'] == 1)
+        if($settings['overview_ajax_loading'] == 1)
         {
             $loaddisplay = 1;
         }
@@ -727,7 +728,7 @@ function overview_end()
             $loaddisplay = 0;
         }
 
-        $intervall = $mybb->settings['overview_ajax'] * 1000;
+        $intervall = $settings['overview_ajax'] * 1000;
         $overview_headerinclude = "<script type=\"text/javascript\" src=\"jscripts/overview.js\"></script>\n";
         $overview_body_onload = " onload=\"overview_request(".$loaddisplay.");\"";
         $overview_body_onload2 = "; overview_request(".$loaddisplay.")";
@@ -741,7 +742,7 @@ function overview_end()
 // Newest members
 function overview_newest_members()
 {
-    global $mybb, $db, $templates, $theme, $lang, $trow;
+    global $mybb, $settings, $db, $templates, $theme, $lang, $trow;
 
     $trow = alt_trow();
 
@@ -753,7 +754,7 @@ function overview_newest_members()
     $query = $db->query("SELECT username, postnum, uid, usergroup, displaygroup
                          FROM ".TABLE_PREFIX."users
                          ORDER BY uid DESC
-                         LIMIT 0,{$mybb->settings['overview_max']};");
+                         LIMIT 0,{$settings['overview_max']};");
 
     // Print data
     while ($users = $db->fetch_array($query))
@@ -771,7 +772,7 @@ function overview_newest_members()
 // Top posters
 function overview_top_posters()
 {
-    global $mybb, $db, $templates, $theme, $lang, $trow;
+    global $mybb, $settings, $db, $templates, $theme, $lang, $trow;
 
     $trow = alt_trow();
 
@@ -783,7 +784,7 @@ function overview_top_posters()
     $query = $db->query("SELECT username, postnum, uid, usergroup, displaygroup
                          FROM ".TABLE_PREFIX."users
                          ORDER BY postnum DESC
-                         LIMIT 0,{$mybb->settings['overview_max']};");
+                         LIMIT 0,{$settings['overview_max']};");
 
     // Print data
     while ($users = $db->fetch_array($query))
@@ -801,7 +802,7 @@ function overview_top_posters()
 // Newest threads
 function overview_newest_threads($overview_unviewwhere)
 {
-    global $mybb, $db, $templates, $theme, $lang, $trow;
+    global $mybb, $settings, $db, $templates, $theme, $lang, $trow;
 
     // Hintergrund festlegen
     $trow = alt_trow();
@@ -816,7 +817,7 @@ function overview_newest_threads($overview_unviewwhere)
                          FROM ".TABLE_PREFIX."threads
                          WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
                          ORDER BY dateline DESC
-                         LIMIT 0,{$mybb->settings['overview_max']};");
+                         LIMIT 0,{$settings['overview_max']};");
 
     // Print data
     while ($threads = $db->fetch_array($query))
@@ -835,7 +836,7 @@ function overview_newest_threads($overview_unviewwhere)
 // Most replies
 function overview_most_replies($overview_unviewwhere)
 {
-    global $mybb, $db, $templates, $theme, $lang, $trow;
+    global $mybb, $settings, $db, $templates, $theme, $lang, $trow;
 
     $trow = alt_trow();
 
@@ -848,7 +849,7 @@ function overview_most_replies($overview_unviewwhere)
                          FROM ".TABLE_PREFIX."threads
                          WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
                          ORDER BY replies DESC
-                         LIMIT 0,{$mybb->settings['overview_max']};");
+                         LIMIT 0,{$settings['overview_max']};");
 
     // Print data
     while($threads = $db->fetch_array($query))
@@ -866,7 +867,7 @@ function overview_most_replies($overview_unviewwhere)
 // Favourite threads
 function overview_favourite_threads($overview_unviewwhere)
 {
-    global $mybb, $db, $templates, $theme, $lang, $trow;
+    global $mybb, $settings, $db, $templates, $theme, $lang, $trow;
 
     $trow = alt_trow();
 
@@ -879,7 +880,7 @@ function overview_favourite_threads($overview_unviewwhere)
                          FROM ".TABLE_PREFIX."threads
                          WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
                          ORDER BY views DESC
-                         LIMIT 0,{$mybb->settings['overview_max']};");
+                         LIMIT 0,{$settings['overview_max']};");
 
     // Print data
     while ($threads = $db->fetch_array($query))
@@ -897,7 +898,7 @@ function overview_favourite_threads($overview_unviewwhere)
 // Newest posts
 function overview_newest_posts($overview_unviewwhere)
 {
-    global $mybb, $db, $templates, $theme, $lang, $trow;
+    global $mybb, $settings, $db, $templates, $theme, $lang, $trow;
 
     $trow = alt_trow();
 
@@ -910,7 +911,7 @@ function overview_newest_posts($overview_unviewwhere)
                          FROM ".TABLE_PREFIX."posts
                          WHERE visible='1' {$overview_unviewwhere}
                          ORDER BY dateline DESC
-                         LIMIT 0,{$mybb->settings['overview_max']};");
+                         LIMIT 0,{$settings['overview_max']};");
 
     // Print data
     while($posts = $db->fetch_array($query))
@@ -928,7 +929,7 @@ function overview_newest_posts($overview_unviewwhere)
 // Edited posts
 function overview_edited_posts($overview_unviewwhere)
 {
-    global $mybb, $db, $templates, $theme, $lang, $trow;
+    global $mybb, $settings, $db, $templates, $theme, $lang, $trow;
 
     $trow = alt_trow();
 
@@ -941,7 +942,7 @@ function overview_edited_posts($overview_unviewwhere)
                          FROM ".TABLE_PREFIX."posts
                          WHERE edittime != 0 AND visible='1' {$overview_unviewwhere}
                          ORDER BY edittime DESC
-                         LIMIT 0,{$mybb->settings['overview_max']};");
+                         LIMIT 0,{$settings['overview_max']};");
 
     // Print data
     while($posts = $db->fetch_array($query))
@@ -959,7 +960,7 @@ function overview_edited_posts($overview_unviewwhere)
 // Next events
 function overview_next_events()
 {
-    global $mybb, $db, $templates, $theme, $lang, $trow;
+    global $mybb, $settings, $db, $templates, $theme, $lang, $trow;
 
     $trow = alt_trow();
 
@@ -992,7 +993,7 @@ function overview_next_events()
         $today = TIME_NOW - 60*60*24;
 
         // Decide whether we can include private events or not.
-        if(intval($mybb->settings['overview_cache']) > 0)
+        if(intval($settings['overview_cache']) > 0)
         {
             $private = "e.private='0'";
         }
@@ -1008,12 +1009,12 @@ function overview_next_events()
                              LEFT JOIN ".TABLE_PREFIX."users u ON (e.uid=u.uid)
                              WHERE e.visible = '1' AND {$private} AND (e.starttime > '{$today}' OR e.endtime > '{$today}') {$cids}
                              ORDER BY starttime ASC
-                             LIMIT 0,{$mybb->settings['overview_max']};");
+                             LIMIT 0,{$settings['overview_max']};");
 
         // Print data
         while($events = $db->fetch_array($query))
         {
-            $events['name'] = my_date($mybb->settings['dateformat'], $events['starttime']).": ".$events['name'];
+            $events['name'] = my_date($settings['dateformat'], $events['starttime']).": ".$events['name'];
             $val1 = overview_parsesubject($events['name'], 0, 0, 0, 0, $events['eid'], 0);
             $val2 = overview_parseuser($events['uid'], $events['username'], $events['usergroup'], $events['displaygroup']);
             eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
@@ -1028,7 +1029,7 @@ function overview_next_events()
 // Newest polls
 function overview_newest_polls($overview_unviewwhere)
 {
-    global $mybb, $db, $templates, $theme, $lang, $trow;
+    global $mybb, $settings, $db, $templates, $theme, $lang, $trow;
 
     $trow = alt_trow();
 
@@ -1042,7 +1043,7 @@ function overview_newest_polls($overview_unviewwhere)
                          LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
                          WHERE t.visible='1' {$overview_unviewwhere} AND t.closed NOT LIKE 'moved|%'
                          ORDER BY p.pid DESC
-                         LIMIT 0,{$mybb->settings['overview_max']};");
+                         LIMIT 0,{$settings['overview_max']};");
 
     // Print data
     while($polls = $db->fetch_array($query))
@@ -1060,7 +1061,7 @@ function overview_newest_polls($overview_unviewwhere)
 // Members with the best reputation
 function overview_bestrep_members()
 {
-    global $mybb, $db, $templates, $theme, $lang, $trow;
+    global $mybb, $settings, $db, $templates, $theme, $lang, $trow;
 
     $trow = alt_trow();
 
@@ -1072,7 +1073,7 @@ function overview_bestrep_members()
     $query = $db->query("SELECT username, reputation, uid, usergroup, displaygroup
                          FROM ".TABLE_PREFIX."users
                          ORDER BY reputation DESC
-                         LIMIT 0,{$mybb->settings['overview_max']};");
+                         LIMIT 0,{$settings['overview_max']};");
 
     // Print data
     while ($users = $db->fetch_array($query))
@@ -1091,9 +1092,9 @@ function overview_bestrep_members()
 
 function overview_parsesubject($subject, $icon=0, $prefix=0, $tid=0, $pid=0, $eid=0, $removere=0)
 {
-    global $mybb, $parser, $cache, $db;
+    global $mybb, $settings, $parser, $cache, $db;
 
-    if($mybb->settings['overview_show_re'] == 0 && $removere == 1)
+    if($settings['overview_show_re'] == 0 && $removere == 1)
     {
         $subject = str_replace("RE: ", "", $subject);
     }
@@ -1106,11 +1107,11 @@ function overview_parsesubject($subject, $icon=0, $prefix=0, $tid=0, $pid=0, $ei
 
     $subjectfull = $subject = $parser->parse_badwords($subject);
 
-    if($mybb->settings['overview_subjects_length'] != 0)
+    if($settings['overview_subjects_length'] != 0)
     {
-        if(my_strlen($subject) > $mybb->settings['overview_subjects_length'])
+        if(my_strlen($subject) > $settings['overview_subjects_length'])
         {
-            $subject = my_substr($subject, 0, $mybb->settings['overview_subjects_length'])."...";
+            $subject = my_substr($subject, 0, $settings['overview_subjects_length'])."...";
         }
     }
 
@@ -1133,7 +1134,7 @@ function overview_parsesubject($subject, $icon=0, $prefix=0, $tid=0, $pid=0, $ei
     }
 
     // Icon
-    if($mybb->settings['overview_showicon'] != 0 && $icon > 0)
+    if($settings['overview_showicon'] != 0 && $icon > 0)
     {
         $icon_cache = $cache->read("posticons");
         $icon = $icon_cache[$icon];
@@ -1150,7 +1151,7 @@ function overview_parsesubject($subject, $icon=0, $prefix=0, $tid=0, $pid=0, $ei
     }
 
     // Prefix
-    if($mybb->settings['overview_showprefix'] && $prefix > 0)
+    if($settings['overview_showprefix'] && $prefix > 0)
     {
         // MyBB does not have a prefix cache - boo hoo.
         global $overview_prefixcache;
@@ -1184,7 +1185,7 @@ function overview_parsesubject($subject, $icon=0, $prefix=0, $tid=0, $pid=0, $ei
 
 function overview_parseuser($uid, $username, $usergroup=0, $displaygroup=0)
 {
-    global $mybb, $db, $lang;
+    global $mybb, $settings, $db, $lang;
 
     $username = htmlspecialchars_uni($username);
 
@@ -1197,7 +1198,7 @@ function overview_parseuser($uid, $username, $usergroup=0, $displaygroup=0)
         }
     }
 
-    if($mybb->settings['overview_usernamestyle'] == 1)
+    if($settings['overview_usernamestyle'] == 1)
     {
         if(!$usergroup)
         {
