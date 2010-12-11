@@ -689,11 +689,19 @@ function overview()
     {
         // Fetch from cache, if present.
         $delta = intval($mybb->settings['overview_cache']);
-        // Cache must be unique to usergroup, additional groups, language
-        $extra = md5("{$mybb->user['usergroup']}{$mybb->user['additionalgroups']}{$lang->language}");
 
         if($delta > 0)
         {
+            // Cache must be unique to the permission and language set of the current user.
+            $extra = implode("-", array($mybb->user['usergroup'],
+                                        $mybb->user['additionalgroups'],
+                                        $mybb->usergroup['cancp'],
+                                        $mybb->usergroup['canmodcp'],
+                                        $mybb->usergroup['issupermod'],
+                                        $lang->language));
+            // Cache name length is limited so let's hash that.
+            $extra = md5($extra);
+
             $overcache = $cache->read("overview{$extra}");
 
             if($overcache && $overcache['time'] >= (TIME_NOW-$delta))
