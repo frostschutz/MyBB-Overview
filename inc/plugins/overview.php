@@ -742,7 +742,7 @@ function overview()
         $collapseinsert1 = $collapseinsert2 = "";
 
         // Output data
-        if($mybb->settings['overview_ajax_onoff'] != 1)
+        if($mybb->settings['overview_ajax_onoff'] != 1 && !($delta > 0))
         {
             $expdisplay = "";
 
