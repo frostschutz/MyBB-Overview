@@ -735,405 +735,356 @@ function overview_end()
     }
 }
 
-// Newest users
-function overview_do_newestusers()
+// Newest members
+function overview_newest_members()
 {
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
-    if($mybb->settings['overview_newest_members'] == 1)
+    $trow = alt_trow();
+
+    $table_heading = $lang->overview_newest_members;
+    $column1_heading = $lang->overview_username;
+    $column2_heading = $lang->overview_posts;
+
+    // Fetch data for newest user from database
+    $query = $db->query("SELECT username, postnum, uid, usergroup, displaygroup
+                         FROM ".TABLE_PREFIX."users
+                         ORDER BY uid DESC
+                         LIMIT 0,{$mybb->settings['overview_max']};");
+
+    // Print data
+    while ($users = $db->fetch_array($query))
     {
-        $trow = alt_trow();
-
-        $table_heading = $lang->overview_newest_members;
-        $column1_heading = $lang->overview_username;
-        $column2_heading = $lang->overview_posts;
-
-        // Fetch data for newest user from database
-        $query = $db->query("
-            SELECT username, postnum, uid, usergroup, displaygroup
-            FROM ".TABLE_PREFIX."users
-            ORDER BY uid DESC
-            LIMIT 0,{$mybb->settings['overview_max']}
-        ;");
-
-        // Print data
-        while ($users = $db->fetch_array($query))
-        {
-            $val1 = overview_parseuser($users['uid'], $users['username'], $users['usergroup'], $users['displaygroup']);
-            $val2 = "<a href=\"search.php?action=finduser&amp;uid={$users['uid']}\">{$users['postnum']}</a>";
-            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
-        }
-
-        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
+        $val1 = overview_parseuser($users['uid'], $users['username'], $users['usergroup'], $users['displaygroup']);
+        $val2 = "<a href=\"search.php?action=finduser&amp;uid={$users['uid']}\">{$users['postnum']}</a>";
+        eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
     }
+
+    eval("\$output = \"".$templates->get("overview_2_columns")."\";");
 
     return $output;
 }
 
 // Top posters
-function overview_do_topposters()
+function overview_top_posters()
 {
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
-    if($mybb->settings['overview_top_posters'] == 1)
+    $trow = alt_trow();
+
+    $table_heading = $lang->overview_top_posters;
+    $column1_heading = $lang->overview_username;
+    $column2_heading = $lang->overview_posts;
+
+    // Fetch data for top posters from database
+    $query = $db->query("SELECT username, postnum, uid, usergroup, displaygroup
+                         FROM ".TABLE_PREFIX."users
+                         ORDER BY postnum DESC
+                         LIMIT 0,{$mybb->settings['overview_max']};");
+
+    // Print data
+    while ($users = $db->fetch_array($query))
     {
-        $trow = alt_trow();
-
-        $table_heading = $lang->overview_top_posters;
-        $column1_heading = $lang->overview_username;
-        $column2_heading = $lang->overview_posts;
-
-        // Fetch data for top posters from database
-        $query = $db->query("
-            SELECT username, postnum, uid, usergroup, displaygroup
-            FROM ".TABLE_PREFIX."users
-            ORDER BY postnum DESC
-            LIMIT 0,{$mybb->settings['overview_max']}
-        ;");
-
-        // Print data
-        while ($users = $db->fetch_array($query))
-        {
-            $val1 = overview_parseuser($users['uid'], $users['username'], $users['usergroup'], $users['displaygroup']);
-            $val2 = "<a href=\"search.php?action=finduser&amp;uid={$users['uid']}\">{$users['postnum']}</a>";
-            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
-        }
-
-        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
+        $val1 = overview_parseuser($users['uid'], $users['username'], $users['usergroup'], $users['displaygroup']);
+        $val2 = "<a href=\"search.php?action=finduser&amp;uid={$users['uid']}\">{$users['postnum']}</a>";
+        eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
     }
+
+    eval("\$output = \"".$templates->get("overview_2_columns")."\";");
 
     return $output;
 }
 
 // Newest threads
-function overview_do_newestthreads($overview_unviewwhere)
+function overview_newest_threads($overview_unviewwhere)
 {
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
-    if($mybb->settings['overview_newest_threads'] == 1)
+    // Hintergrund festlegen
+    $trow = alt_trow();
+
+    $table_heading = $lang->overview_newest_threads;
+    $column1_heading = $lang->overview_topic;
+    $column2_heading = $lang->overview_author;
+    $column3_heading = $lang->overview_replies;
+
+    // Fetch data
+    $query = $db->query("SELECT subject, username, uid, tid, replies, icon, prefix
+                         FROM ".TABLE_PREFIX."threads
+                         WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
+                         ORDER BY dateline DESC
+                         LIMIT 0,{$mybb->settings['overview_max']};");
+
+    // Print data
+    while ($threads = $db->fetch_array($query))
     {
-        // Hintergrund festlegen
-        $trow = alt_trow();
-
-        $table_heading = $lang->overview_newest_threads;
-        $column1_heading = $lang->overview_topic;
-        $column2_heading = $lang->overview_author;
-        $column3_heading = $lang->overview_replies;
-
-        // Fetch data
-        $query = $db->query("
-            SELECT subject, username, uid, tid, replies, icon, prefix
-            FROM ".TABLE_PREFIX."threads
-            WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
-            ORDER BY dateline DESC
-            LIMIT 0,{$mybb->settings['overview_max']}
-        ;");
-
-        // Print data
-        while ($threads = $db->fetch_array($query))
-        {
-            $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['prefix'], $threads['tid']);
-            $val2 = overview_parseuser($threads['uid'], $threads['username']);
-            $val3 = "<a href=\"javascript:MyBB.whoPosted({$threads['tid']});\">{$threads['replies']}</a>";
-            eval("\$table_content .= \"".$templates->get("overview_3_columns_row")."\";");
-        }
-
-        eval("\$output = \"".$templates->get("overview_3_columns")."\";");
+        $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['prefix'], $threads['tid']);
+        $val2 = overview_parseuser($threads['uid'], $threads['username']);
+        $val3 = "<a href=\"javascript:MyBB.whoPosted({$threads['tid']});\">{$threads['replies']}</a>";
+        eval("\$table_content .= \"".$templates->get("overview_3_columns_row")."\";");
     }
+
+    eval("\$output = \"".$templates->get("overview_3_columns")."\";");
 
     return $output;
 }
 
 // Most replies
-function overview_do_mostreplies($overview_unviewwhere)
+function overview_most_replies($overview_unviewwhere)
 {
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
-    if($mybb->settings['overview_most_replies'] == 1)
+    $trow = alt_trow();
+
+    $table_heading = $lang->overview_most_replies;
+    $column1_heading = $lang->overview_topic;
+    $column2_heading = $lang->overview_replies;
+
+    // Fetch data
+    $query = $db->query("SELECT subject, tid, replies, icon, prefix
+                         FROM ".TABLE_PREFIX."threads
+                         WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
+                         ORDER BY replies DESC
+                         LIMIT 0,{$mybb->settings['overview_max']};");
+
+    // Print data
+    while($threads = $db->fetch_array($query))
     {
-        $trow = alt_trow();
-
-        $table_heading = $lang->overview_most_replies;
-        $column1_heading = $lang->overview_topic;
-        $column2_heading = $lang->overview_replies;
-
-        // Fetch data
-        $query = $db->query("
-            SELECT subject, tid, replies, icon, prefix
-            FROM ".TABLE_PREFIX."threads
-            WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
-            ORDER BY replies DESC
-            LIMIT 0,{$mybb->settings['overview_max']}
-        ;");
-
-        // Print data
-        while($threads = $db->fetch_array($query))
-        {
-            $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['prefix'], $threads['tid']);
-            $val2 = "<a href=\"javascript:MyBB.whoPosted({$threads['tid']});\">{$threads['replies']}</a>";
-            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
-        }
-
-        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
+        $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['prefix'], $threads['tid']);
+        $val2 = "<a href=\"javascript:MyBB.whoPosted({$threads['tid']});\">{$threads['replies']}</a>";
+        eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
     }
+
+    eval("\$output = \"".$templates->get("overview_2_columns")."\";");
 
     return $output;
 }
 
 // Favourite threads
-function overview_do_favouritethreads($overview_unviewwhere)
+function overview_favourite_threads($overview_unviewwhere)
 {
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
-    if($mybb->settings['overview_favourite_threads'] == 1)
+    $trow = alt_trow();
+
+    $table_heading = $lang->overview_favourite_threads;
+    $column1_heading = $lang->overview_topic;
+    $column2_heading = $lang->overview_views;
+
+    // Fetch data
+    $query = $db->query("SELECT subject, tid, views, icon, prefix
+                         FROM ".TABLE_PREFIX."threads
+                         WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
+                         ORDER BY views DESC
+                         LIMIT 0,{$mybb->settings['overview_max']};");
+
+    // Print data
+    while ($threads = $db->fetch_array($query))
     {
-        $trow = alt_trow();
-
-        $table_heading = $lang->overview_favourite_threads;
-        $column1_heading = $lang->overview_topic;
-        $column2_heading = $lang->overview_views;
-
-        // Fetch data
-        $query = $db->query("
-            SELECT subject, tid, views, icon, prefix
-            FROM ".TABLE_PREFIX."threads
-            WHERE visible = '1' {$overview_unviewwhere} AND closed NOT LIKE 'moved|%'
-            ORDER BY views DESC
-            LIMIT 0,{$mybb->settings['overview_max']}
-        ;");
-
-        // Print data
-        while ($threads = $db->fetch_array($query))
-        {
-            $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['prefix'], $threads['tid']);
-            $val2 = $threads['views'];
-            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
-        }
-
-        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
+        $val1 = overview_parsesubject($threads['subject'], $threads['icon'], $threads['prefix'], $threads['tid']);
+        $val2 = $threads['views'];
+        eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
     }
+
+    eval("\$output = \"".$templates->get("overview_2_columns")."\";");
 
     return $output;
 }
 
 // Newest posts
-function overview_do_newestposts($overview_unviewwhere)
+function overview_newest_posts($overview_unviewwhere)
 {
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
-    if($mybb->settings['overview_newest_posts'] == 1)
+    $trow = alt_trow();
+
+    $table_heading = $lang->overview_newest_posts;
+    $column1_heading = $lang->overview_subject;
+    $column2_heading = $lang->overview_author;
+
+    // Fetch data
+    $query = $db->query("SELECT subject, username, uid, pid, tid, icon
+                         FROM ".TABLE_PREFIX."posts
+                         WHERE visible='1' {$overview_unviewwhere}
+                         ORDER BY dateline DESC
+                         LIMIT 0,{$mybb->settings['overview_max']};");
+
+    // Print data
+    while($posts = $db->fetch_array($query))
     {
-        $trow = alt_trow();
-
-        $table_heading = $lang->overview_newest_posts;
-        $column1_heading = $lang->overview_subject;
-        $column2_heading = $lang->overview_author;
-
-        // Fetch data
-        $query = $db->query("
-            SELECT subject, username, uid, pid, tid, icon
-            FROM ".TABLE_PREFIX."posts
-            WHERE visible='1' {$overview_unviewwhere}
-            ORDER BY dateline DESC
-            LIMIT 0,{$mybb->settings['overview_max']}
-        ;");
-
-        // Print data
-        while($posts = $db->fetch_array($query))
-        {
-            $val1 = overview_parsesubject($posts['subject'], $posts['icon'], 0, $posts['tid'], $posts['pid'], 0, 1);
-            $val2 = overview_parseuser($posts['uid'], $posts['username']);
-            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
-        }
-
-        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
+        $val1 = overview_parsesubject($posts['subject'], $posts['icon'], 0, $posts['tid'], $posts['pid'], 0, 1);
+        $val2 = overview_parseuser($posts['uid'], $posts['username']);
+        eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
     }
+
+    eval("\$output = \"".$templates->get("overview_2_columns")."\";");
 
     return $output;
 }
 
 // Edited posts
-function overview_do_editedposts($overview_unviewwhere)
+function overview_edited_posts($overview_unviewwhere)
 {
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
-    if($mybb->settings['overview_edited_posts'] == 1)
+    $trow = alt_trow();
+
+    $table_heading = $lang->overview_edited_posts;
+    $column1_heading = $lang->overview_subject;
+    $column2_heading = $lang->overview_author;
+
+    // Fetch data
+    $query = $db->query("SELECT subject, username, uid, pid, tid, icon
+                         FROM ".TABLE_PREFIX."posts
+                         WHERE edittime != 0 AND visible='1' {$overview_unviewwhere}
+                         ORDER BY edittime DESC
+                         LIMIT 0,{$mybb->settings['overview_max']};");
+
+    // Print data
+    while($posts = $db->fetch_array($query))
     {
-        $trow = alt_trow();
-
-        $table_heading = $lang->overview_edited_posts;
-        $column1_heading = $lang->overview_subject;
-        $column2_heading = $lang->overview_author;
-
-        // Fetch data
-        $query = $db->query("
-            SELECT subject, username, uid, pid, tid, icon
-            FROM ".TABLE_PREFIX."posts
-            WHERE edittime != 0 AND visible='1' {$overview_unviewwhere}
-            ORDER BY edittime DESC
-            LIMIT 0,{$mybb->settings['overview_max']}
-        ;");
-
-        // Print data
-        while($posts = $db->fetch_array($query))
-        {
-            $val1 = overview_parsesubject($posts['subject'], $posts['icon'], 0, $posts['tid'], $posts['pid'], 0, 1);
-            $val2 = overview_parseuser($posts['uid'], $posts['username']);
-            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
-        }
-
-        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
+        $val1 = overview_parsesubject($posts['subject'], $posts['icon'], 0, $posts['tid'], $posts['pid'], 0, 1);
+        $val2 = overview_parseuser($posts['uid'], $posts['username']);
+        eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
     }
+
+    eval("\$output = \"".$templates->get("overview_2_columns")."\";");
 
     return $output;
 }
 
 // Next events
-function overview_do_nextevents()
+function overview_next_events()
 {
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
-    if($mybb->settings['overview_next_events'] == 1)
+    $trow = alt_trow();
+
+    $table_heading = $lang->overview_next_events;
+    $column1_heading = $lang->overview_event;
+    $column2_heading = $lang->overview_author;
+
+    if($mybb->usergroup['canviewcalendar'] == 1)
     {
-        $trow = alt_trow();
+        // Permissions
+        $query = $db->query("SELECT cid
+                             FROM ".TABLE_PREFIX."calendarpermissions
+                             WHERE gid = '".intval($mybb->user['usergroup'])."'
+                             AND canviewcalendar = '0';");
 
-        $table_heading = $lang->overview_next_events;
-        $column1_heading = $lang->overview_event;
-        $column2_heading = $lang->overview_author;
+        $cids = $sep = "";
 
-        if($mybb->usergroup['canviewcalendar'] == 1)
+        if($db->num_rows($query) != 0)
         {
-            // Permissions
-            $query = $db->query("
-                SELECT cid
-                FROM ".TABLE_PREFIX."calendarpermissions
-                WHERE gid = '".intval($mybb->user['usergroup'])."' AND canviewcalendar = '0'
-            ;");
-
-            $cids = $sep = "";
-
-            if($db->num_rows($query) != 0)
+            while($groups = $db->fetch_array($query))
             {
-                while($groups = $db->fetch_array($query))
-                {
-                    $cids .= $sep.$groups['cid'];
-                    $sep = ",";
-                }
-
-                $cids = "AND e.cid NOT IN ({$cids})";
+                $cids .= $sep.$groups['cid'];
+                $sep = ",";
             }
 
-            // TODO: Instead of substracting 24 hours, align to the users timezone boundary.
-            $today = TIME_NOW - 60*60*24;
-
-            // Decide whether we can include private events or not.
-            if(intval($mybb->settings['overview_cache']) > 0)
-            {
-                $private = "e.private='0'";
-            }
-
-            else
-            {
-                $private = "(e.private='0' OR e.uid='".intval($mybb->user['uid'])."')";
-            }
-
-            // Fetch data
-            $query = $db->query("
-                SELECT e.eid, e.name, e.starttime, e.uid, u.username, u.usergroup, u.displaygroup
-                FROM ".TABLE_PREFIX."events e
-                LEFT JOIN ".TABLE_PREFIX."users u ON (e.uid=u.uid)
-                WHERE e.visible = '1' AND {$private} AND (e.starttime > '{$today}' OR e.endtime > '{$today}') {$cids}
-                ORDER BY starttime ASC
-                LIMIT 0,{$mybb->settings['overview_max']}
-            ;");
-
-            // Print data
-            while($events = $db->fetch_array($query))
-            {
-                $events['name'] = my_date($mybb->settings['dateformat'], $events['starttime']).": ".$events['name'];
-                $val1 = overview_parsesubject($events['name'], 0, 0, 0, 0, $events['eid'], 0);
-                $val2 = overview_parseuser($events['uid'], $events['username'], $events['usergroup'], $events['displaygroup']);
-                eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
-            }
+            $cids = "AND e.cid NOT IN ({$cids})";
         }
 
-        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
+        // TODO: Instead of substracting 24 hours, align to the users timezone boundary.
+        $today = TIME_NOW - 60*60*24;
+
+        // Decide whether we can include private events or not.
+        if(intval($mybb->settings['overview_cache']) > 0)
+        {
+            $private = "e.private='0'";
+        }
+
+        else
+        {
+            $private = "(e.private='0' OR e.uid='".intval($mybb->user['uid'])."')";
+        }
+
+        // Fetch data
+        $query = $db->query("SELECT e.eid, e.name, e.starttime, e.uid, u.username, u.usergroup, u.displaygroup
+                             FROM ".TABLE_PREFIX."events e
+                             LEFT JOIN ".TABLE_PREFIX."users u ON (e.uid=u.uid)
+                             WHERE e.visible = '1' AND {$private} AND (e.starttime > '{$today}' OR e.endtime > '{$today}') {$cids}
+                             ORDER BY starttime ASC
+                             LIMIT 0,{$mybb->settings['overview_max']};");
+
+        // Print data
+        while($events = $db->fetch_array($query))
+        {
+            $events['name'] = my_date($mybb->settings['dateformat'], $events['starttime']).": ".$events['name'];
+            $val1 = overview_parsesubject($events['name'], 0, 0, 0, 0, $events['eid'], 0);
+            $val2 = overview_parseuser($events['uid'], $events['username'], $events['usergroup'], $events['displaygroup']);
+            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
+        }
     }
+
+    eval("\$output = \"".$templates->get("overview_2_columns")."\";");
 
     return $output;
 }
 
 // Newest polls
-function overview_do_newestpolls($overview_unviewwhere)
+function overview_newest_polls($overview_unviewwhere)
 {
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
-    if($mybb->settings['overview_newest_polls'] == 1)
+    $trow = alt_trow();
+
+    $table_heading = $lang->overview_newest_polls;
+    $column1_heading = $lang->overview_question;
+    $column2_heading = $lang->overview_author;
+
+    // Fetch data
+    $query = $db->query("SELECT p.question, p.tid, t.uid, t.username
+                         FROM ".TABLE_PREFIX."polls p
+                         LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
+                         WHERE t.visible='1' {$overview_unviewwhere} AND t.closed NOT LIKE 'moved|%'
+                         ORDER BY p.pid DESC
+                         LIMIT 0,{$mybb->settings['overview_max']};");
+
+    // Print data
+    while($polls = $db->fetch_array($query))
     {
-        $trow = alt_trow();
-
-        $table_heading = $lang->overview_newest_polls;
-        $column1_heading = $lang->overview_question;
-        $column2_heading = $lang->overview_author;
-
-        // Fetch data
-        $query = $db->query("
-            SELECT p.question, p.tid, t.uid, t.username
-            FROM ".TABLE_PREFIX."polls p
-            LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
-            WHERE t.visible='1' {$overview_unviewwhere} AND t.closed NOT LIKE 'moved|%'
-            ORDER BY p.pid DESC
-            LIMIT 0,{$mybb->settings['overview_max']}
-        ;");
-
-        // Print data
-        while($polls = $db->fetch_array($query))
-        {
-            $val1 = overview_parsesubject($polls['question'], 0, 0, $polls['tid']);
-            $val2 = overview_parseuser($polls['uid'], $polls['username']);
-            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
-        }
-
-        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
+        $val1 = overview_parsesubject($polls['question'], 0, 0, $polls['tid']);
+        $val2 = overview_parseuser($polls['uid'], $polls['username']);
+        eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
     }
+
+    eval("\$output = \"".$templates->get("overview_2_columns")."\";");
 
     return $output;
 }
 
 // Members with the best reputation
-function overview_do_bestrepmembers()
+function overview_bestrep_members()
 {
     global $mybb, $db, $templates, $theme, $lang, $trow;
 
-    if($mybb->settings['overview_bestrep_members'] == 1)
+    $trow = alt_trow();
+
+    $table_heading = $lang->overview_bestrep_members;
+    $column1_heading = $lang->overview_username;
+    $column2_heading = $lang->overview_reputation;
+
+    // Fetch data
+    $query = $db->query("SELECT username, reputation, uid, usergroup, displaygroup
+                         FROM ".TABLE_PREFIX."users
+                         ORDER BY reputation DESC
+                         LIMIT 0,{$mybb->settings['overview_max']};");
+
+    // Print data
+    while ($users = $db->fetch_array($query))
     {
-        $trow = alt_trow();
-
-        $table_heading = $lang->overview_bestrep_members;
-        $column1_heading = $lang->overview_username;
-        $column2_heading = $lang->overview_reputation;
-
-        // Fetch data
-        $query = $db->query("
-            SELECT username, reputation, uid, usergroup, displaygroup
-            FROM ".TABLE_PREFIX."users
-            ORDER BY reputation DESC
-            LIMIT 0,{$mybb->settings['overview_max']}
-        ;");
-
-        // Print data
-        while ($users = $db->fetch_array($query))
-        {
-            $val1 = overview_parseuser($users['uid'], $users['username'], $users['usergroup'], $users['displaygroup']);
-            $val2 = get_reputation($users['reputation'], $users['uid']);
-            eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
-        }
-
-        eval("\$output = \"".$templates->get("overview_2_columns")."\";");
+        $val1 = overview_parseuser($users['uid'], $users['username'], $users['usergroup'], $users['displaygroup']);
+        $val2 = get_reputation($users['reputation'], $users['uid']);
+        eval("\$table_content .= \"".$templates->get("overview_2_columns_row")."\";");
     }
+
+    eval("\$output = \"".$templates->get("overview_2_columns")."\";");
 
     return $output;
 }
+
+/* --- Helpers: --- */
 
 function overview_parsesubject($subject, $icon=0, $prefix=0, $tid=0, $pid=0, $eid=0, $removere=0)
 {
