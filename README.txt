@@ -25,8 +25,8 @@ License: GPL, see COPYING.txt
 
 ### UPDATE NOTE ###
 
-Deactivate the old version of the plugin and replace all files with the ones 
-in this package. Activate the plugin again.
+Uninstall the old version of the plugin and replace all files with the ones 
+in this package. Install the plugin again.
 
 If you find the following files on your server you can delete them because 
 they aren't needed anymore:
