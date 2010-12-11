@@ -201,6 +201,14 @@ function overview_install()
     $disp = 1;
     $spalte = 1;
 
+    // Drop down menu with 10 items
+    $select10 = implode("\n", array("select", "0=No", "1=Yes (Order 1)",
+                                    "2=Yes (Order 2)", "3=Yes (Order 3)",
+                                    "4=Yes (Order 4)", "5=Yes (Order 5)",
+                                    "6=Yes (Order 6)", "7=Yes (Order 7)",
+                                    "8=Yes (Order 8)", "9=Yes (Order 9)",
+                                    "10=Yes (Order 10)"));
+
     // Insert settings
     $setting = array(
         "name" => "overview_max",
@@ -217,18 +225,7 @@ function overview_install()
         "name" => "overview_newest_members",
         "title" => "Show newest members?",
         "description" => "Choose if you want the newest members to be shown.",
-        "optionscode" => "yesno",
-        "value" => 1,
-        "disporder" => $disp++,
-        "gid" => $gid,
-        );
-    $db->insert_query("settings", $setting);
-
-    $setting = array(
-        "name" => "overview_do_newestusers",
-        "title" => "Sorting",
-        "description" => "Here you can change the order.",
-        "optionscode" => "text",
+        "optionscode" => $select10,
         "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
@@ -239,19 +236,8 @@ function overview_install()
         "name" => "overview_top_posters",
         "title" => "Show Top Posters?",
         "description" => "Choose if you want the top posters to be shown.",
-        "optionscode" => "yesno",
+        "optionscode" => $select10,
         "value" => 0,
-        "disporder" => $disp++,
-        "gid" => intval($gid)
-        );
-    $db->insert_query("settings", $setting);
-
-    $setting = array(
-        "name" => "overview_do_topposters",
-        "title" => "Sorting",
-        "description" => "Here you can change the order.",
-        "optionscode" => "text",
-        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => intval($gid)
         );
@@ -261,21 +247,10 @@ function overview_install()
         "name" => "overview_newest_threads",
         "title" => "Show newest threads?",
         "description" => "Choose if you want the newest threads to be shown.",
-        "optionscode" => "yesno",
-        "value" => 1,
-        "disporder" => $disp++,
-        "gid" => intval($gid)
-        );
-    $db->insert_query("settings", $setting);
-
-    $setting = array(
-        "name" => "overview_do_newestthreads",
-        "title" => "Sorting",
-        "description" => "Here you can change the order.",
-        "optionscode" => "text",
+        "optionscode" => $select10,
         "value" => $spalte++,
         "disporder" => $disp++,
-        "gid" => $gid,
+        "gid" => intval($gid)
         );
     $db->insert_query("settings", $setting);
 
@@ -283,19 +258,8 @@ function overview_install()
         "name" => "overview_most_replies",
         "title" => "Show threads with most replies?",
         "description" => "Choose if you want the threads with the most replies to be shown.",
-        "optionscode" => "yesno",
+        "optionscode" => $select10,
         "value" => 0,
-        "disporder" => $disp++,
-        "gid" => $gid,
-        );
-    $db->insert_query("settings", $setting);
-
-    $setting = array(
-        "name" => "overview_do_mostreplies",
-        "title" => "Sorting",
-        "description" => "Here you can change the order.",
-        "optionscode" => "text",
-        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -305,19 +269,8 @@ function overview_install()
         "name" => "overview_favourite_threads",
         "title" => "Show favourite Threads?",
         "description" => "Choose if you want the favourite threads to be shown.",
-        "optionscode" => "yesno",
+        "optionscode" => $select10,
         "value" => 0,
-        "disporder" => $disp++,
-        "gid" => $gid,
-        );
-    $db->insert_query("settings", $setting);
-
-    $setting = array(
-        "name" => "overview_do_favouritethreads",
-        "title" => "Sorting",
-        "description" => "Here you can change the order.",
-        "optionscode" => "text",
-        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -327,18 +280,7 @@ function overview_install()
         "name" => "overview_newest_posts",
         "title" => "Show newest posts?",
         "description" => "Choose if you want the newest posts to be shown.",
-        "optionscode" => "yesno",
-        "value" => 1,
-        "disporder" => $disp++,
-        "gid" => $gid,
-        );
-    $db->insert_query("settings", $setting);
-
-    $setting = array(
-        "name" => "overview_do_newestposts",
-        "title" => "Sorting",
-        "description" => "Here you can change the order.",
-        "optionscode" => "text",
+        "optionscode" => $select10,
         "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
@@ -349,19 +291,8 @@ function overview_install()
         "name" => "overview_edited_posts",
         "title" => "Show recently edited posts?",
         "description" => "Choose if you want the recently edited posts to be shown.",
-        "optionscode" => "yesno",
+        "optionscode" => $select10,
         "value" => 0,
-        "disporder" => $disp++,
-        "gid" => $gid,
-        );
-    $db->insert_query("settings", $setting);
-
-    $setting = array(
-        "name" => "overview_do_editedposts",
-        "title" => "Sorting",
-        "description" => "Here you can change the order.",
-        "optionscode" => "text",
-        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -371,19 +302,8 @@ function overview_install()
         "name" => "overview_bestrep_members",
         "title" => "Show best reputated members?",
         "description" => "Choose if you want the best reputated members to be shown.",
-        "optionscode" => "yesno",
+        "optionscode" => $select10,
         "value" => 0,
-        "disporder" => $disp++,
-        "gid" => $gid,
-        );
-    $db->insert_query("settings", $setting);
-
-    $setting = array(
-        "name" => "overview_do_bestrepmembers",
-        "title" => "Sorting",
-        "description" => "Here you can change the order.",
-        "optionscode" => "text",
-        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -393,19 +313,8 @@ function overview_install()
         "name" => "overview_newest_polls",
         "title" => "Show best newest polls?",
         "description" => "Choose if you want the newest polls to be shown.",
-        "optionscode" => "yesno",
+        "optionscode" => $select10,
         "value" => 0,
-        "disporder" => $disp++,
-        "gid" => $gid,
-        );
-    $db->insert_query("settings", $setting);
-
-    $setting = array(
-        "name" => "overview_do_newestpolls",
-        "title" => "Sorting",
-        "description" => "Here you can change the order.",
-        "optionscode" => "text",
-        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -415,19 +324,8 @@ function overview_install()
         "name" => "overview_next_events",
         "title" => "Show best next events?",
         "description" => "Choose if you want the next events to be shown.",
-        "optionscode" => "yesno",
+        "optionscode" => $select10,
         "value" => 0,
-        "disporder" => $disp++,
-        "gid" => $gid,
-        );
-    $db->insert_query("settings", $setting);
-
-    $setting = array(
-        "name" => "overview_do_nextevents",
-        "title" => "Sorting",
-        "description" => "Here you can change the order.",
-        "optionscode" => "text",
-        "value" => $spalte++,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -511,22 +409,11 @@ function overview_install()
     $db->insert_query("settings", $setting);
 
     $setting = array(
-        "name" => "overview_ajax_onoff",
-        "title" => "Ajax",
-        "description" => "Do you want to enable the Ajax functionality so that the overview box reloads itself?",
-        "optionscode" => "yesno",
-        "value" => 0,
-        "disporder" => $disp++,
-        "gid" => $gid,
-        );
-    $db->insert_query("settings", $setting);
-
-    $setting = array(
-        "name" => "overview_ajax_time",
-        "title" => "Period",
-        "description" => "Enter the period of time after that the overview box should reload itself (Seconds)?",
+        "name" => "overview_ajax",
+        "title" => "AJAX",
+        "description" => "Time (in seconds) if you want the overview box to reload itself periodically using AJAX. Set to 0 to disable.",
         "optionscode" => "text",
-        "value" => 60,
+        "value" => 0,
         "disporder" => $disp++,
         "gid" => $gid,
         );
@@ -535,7 +422,7 @@ function overview_install()
     $setting = array(
         "name" => "overview_ajax_loading",
         "title" => "Loading",
-        "description" => "Do you want to show a \"Loading\"-Window?",
+        "description" => "When using AJAX, do you want to show a \"Loading\"-Window?",
         "optionscode" => "yesno",
         "value" => 1,
         "disporder" => $disp++,
