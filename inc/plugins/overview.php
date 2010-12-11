@@ -78,8 +78,8 @@ function overview_info()
         "website"       => "http://www.mybboard.de",
         "author"        => "Michael Schlechtinger",
         "authorsite"    => "http://www.mybboard.de",
-        "version"       => "3.9.0",
-        "guid"          => "79710704156952a4cf8793808c6ab3ea",
+        "version"       => "3.9.1",
+        "guid"          => "cf9d1e46ae914e3162d90fc7cbeac2f7",
         "compatibility" => "16*"
         );
 }
