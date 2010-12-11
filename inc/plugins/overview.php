@@ -728,7 +728,7 @@ function overview()
         $orderquery = $db->query("
             SELECT name from ".TABLE_PREFIX."settings
             WHERE name IN ('overview_do_newestusers','overview_do_topposters','overview_do_newestthreads','overview_do_mostreplies','overview_do_favouritethreads','overview_do_newestposts','overview_do_editedposts','overview_do_bestrepmembers','overview_do_newestpolls','overview_do_nextevents')
-            ORDER BY value ASC
+            ORDER BY value+0 ASC
         ;");
 
         $collapseinsert1 = $collapseinsert2 = "";
