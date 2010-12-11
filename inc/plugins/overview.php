@@ -603,9 +603,6 @@ function overview()
         // Load language files
         $lang->load("overview");
 
-        // Determine number of columns
-        $num_columns = overview_num_columns();
-
         // Exclude unviewable forums
         $overview_unviewwhere = "";
         $overview_unviewable = get_unviewable_forums();
@@ -657,6 +654,9 @@ function overview()
         }
 
         asort($order);
+
+        // Determine number of columns
+        $num_columns = count($order);
 
         // Build the content in the determined order.
         foreach($order as $key => $val)
@@ -1218,36 +1218,6 @@ function overview_parseuser($uid, $username, $usergroup=0, $displaygroup=0)
     {
         return $username;
     }
-}
-
-// Determine number of columns
-function overview_num_columns()
-{
-    global $mybb;
-
-    $i = 0;
-    $settings = array(
-        'overview_newest_members',
-        'overview_top_posters',
-        'overview_newest_threads',
-        'overview_most_replies',
-        'overview_favourite_threads',
-        'overview_newest_posts',
-        'overview_edited_posts',
-        'overview_bestrep_members',
-        'overview_newest_polls',
-        'overview_next_events'
-        );
-
-    foreach($settings as $setting)
-    {
-        if($mybb->settings[$setting] == 1)
-        {
-            $i++;
-        }
-    }
-
-    return $i;
 }
 
 /* --- End of file. --- */
