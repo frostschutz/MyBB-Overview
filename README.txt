@@ -1,6 +1,6 @@
 ### INFORMATION ###
 
-Overview (3.9.1) for MyBB 1.6
+Overview (3.9.2) for MyBB 1.6
 
 Displays a box on the index page that shows latest threads, posts, users, 
 and more.

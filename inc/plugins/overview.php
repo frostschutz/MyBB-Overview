@@ -78,7 +78,7 @@ function overview_info()
         "website"       => "http://www.mybboard.de",
         "author"        => "Michael Schlechtinger",
         "authorsite"    => "http://www.mybboard.de",
-        "version"       => "3.9.1",
+        "version"       => "3.9.2",
         "guid"          => "cf9d1e46ae914e3162d90fc7cbeac2f7",
         "compatibility" => "16*"
         );
