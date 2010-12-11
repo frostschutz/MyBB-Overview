@@ -620,7 +620,7 @@ function overview()
         $collapseinsert1 = $collapseinsert2 = "";
 
         // Output data
-        if($mybb->settings['overview_ajax_onoff'] != 1 && !($delta > 0))
+        if($mybb->settings['overview_ajax'] && !($delta > 0))
         {
             $expdisplay = "";
 
@@ -698,7 +698,7 @@ function overview_ajax()
 {
     global $mybb;
 
-    if($mybb->input['action'] == "overview" && $mybb->settings['overview_ajax_onoff'] == 1)
+    if($mybb->input['action'] == "overview" && $mybb->settings['overview_ajax'])
     {
         echo overview();
     }
@@ -715,7 +715,7 @@ function overview_end()
         $overviewgroups = explode(",", $mybb->settings['overview_usergroups']);
     }
 
-    if($mybb->settings['overview_ajax_onoff'] == 1 && ($mybb->settings['overview_usergroups'] == 0 || !in_array($mybb->user['usergroup'], $overviewgroups)))
+    if($mybb->settings['overview_ajax'] && ($mybb->settings['overview_usergroups'] == 0 || !in_array($mybb->user['usergroup'], $overviewgroups)))
     {
         if($mybb->settings['overview_ajax_loading'] == 1)
         {
@@ -727,7 +727,7 @@ function overview_end()
             $loaddisplay = 0;
         }
 
-        $intervall = $mybb->settings['overview_ajax_time'] * 1000;
+        $intervall = $mybb->settings['overview_ajax'] * 1000;
         $overview_headerinclude = "<script type=\"text/javascript\" src=\"jscripts/overview.js\"></script>\n";
         $overview_body_onload = " onload=\"overview_request(".$loaddisplay.");\"";
         $overview_body_onload2 = "; overview_request(".$loaddisplay.")";
