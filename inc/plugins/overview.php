@@ -619,13 +619,6 @@ function overview()
         $trow_message = "";
         $overview = "";
 
-        // Determine sort order
-        $orderquery = $db->query("
-            SELECT name from ".TABLE_PREFIX."settings
-            WHERE name IN ('overview_do_newestusers','overview_do_topposters','overview_do_newestthreads','overview_do_mostreplies','overview_do_favouritethreads','overview_do_newestposts','overview_do_editedposts','overview_do_bestrepmembers','overview_do_newestpolls','overview_do_nextevents')
-            ORDER BY value+0 ASC
-        ;");
-
         $collapseinsert1 = $collapseinsert2 = "";
 
         // Output data
@@ -650,9 +643,25 @@ function overview()
             $collapseinsert2 = " style=\"{$expdisplay}\" id=\"overview_e\"";
         }
 
-        while ($order = $db->fetch_array($orderquery))
+        // Determine sort order
+        $order = array();
+
+        foreach(array('overview_newest_members','overview_top_posters','overview_newest_threads','overview_most_replies','overview_favourite_threads','overview_newest_posts','overview_edited_posts','overview_bestrep_members','overview_newest_polls','overview_next_events') as $key)
         {
-            $overview_content .= call_user_func($order['name'], $overview_unviewwhere);
+            $val = intval($mybb->settings[$val]);
+
+            if($val)
+            {
+                $order[$key] = $mybb->settings[$val];
+            }
+        }
+
+        asort($order);
+
+        // Build the content in the determined order.
+        foreach($order as $key => $val)
+        {
+            $overview_content .= call_user_func($key, $overview_unviewwhere);
         }
 
         // Show message?
