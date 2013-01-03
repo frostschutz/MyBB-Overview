@@ -611,6 +611,28 @@ function overview()
         {
             $overview_unviewwhere = "AND fid NOT IN ({$overview_unviewable})";
         }
+		
+		// Check group permissions if we can't view threads not started by us
+		$group_permissions = forum_permissions();
+		foreach($group_permissions as $fid => $forum_permissions)
+		{
+			if($forum_permissions['canonlyviewownthreads'] == 1)
+			{
+				$onlyusfids[] = $fid;
+			}
+		}
+		if(!empty($onlyusfids))
+		{
+			if($delta > 0)
+			{
+				// Hides threads and posts when cache is enabled
+				$overview_unviewwhere .= " AND fid NOT IN(".implode(',', $onlyusfids).")";
+			}
+			else
+			{
+				$overview_unviewwhere .= " AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
+			}
+		}
 
         // Define variables
         $overview_content = "";
